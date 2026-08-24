@@ -242,13 +242,14 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
 }
 
 .dropzone{
-  min-height:52px;
+  min-height:64px;
   border:1.5px dashed var(--line);
   border-radius:8px;
-  padding:8px;
+  padding:10px;
+  margin:2px 0;
   display:flex; flex-direction:column; gap:6px;
   background:rgba(255,255,255,.5);
-  transition:border-color .15s ease, background .15s ease, box-shadow .15s ease;
+  transition:border-color .12s ease, background .12s ease, box-shadow .12s ease, transform .12s ease;
 }
 .col-deep .dropzone{
   border-color:var(--line-deep);
@@ -263,9 +264,22 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
 .col-deep .dropzone:empty::before{color:#7BAAA2;}
 .dropzone.valid-target{
   border-color:var(--good);
-  box-shadow:0 0 0 3px rgba(46,158,122,.15);
+  box-shadow:0 0 0 3px rgba(46,158,122,.12);
 }
-.dropzone.invalid-target{opacity:.35;}
+.dropzone.invalid-target{opacity:.3;}
+.dropzone.hover-active{
+  border-color:var(--good);
+  border-style:solid;
+  background:rgba(46,158,122,.14);
+  box-shadow:0 0 0 4px rgba(46,158,122,.22);
+  transform:scale(1.02);
+}
+.dropzone.hover-reject{
+  border-color:var(--buoy);
+  border-style:solid;
+  background:rgba(255,122,69,.1);
+  box-shadow:0 0 0 4px rgba(255,122,69,.15);
+}
 .dropzone.reject-flash{
   animation:shake .35s ease;
   border-color:var(--buoy);
@@ -768,10 +782,12 @@ function renderSlotItem(item, sectionId, depth){
 var dragging = null; // {ex, ghost}
 var AUTOSCROLL_EDGE = 90; // px from top/bottom edge that triggers scrolling
 var AUTOSCROLL_MAX_SPEED = 16; // px per animation frame
+var SNAP_TOLERANCE = 48; // px - how close a drop needs to be to "snap" into a nearby zone
 
 function attachDrag(card, ex){
   card.addEventListener('pointerdown', function(e){
     e.preventDefault();
+    try{ card.setPointerCapture(e.pointerId); }catch(err){}
     startDrag(ex, e.clientX, e.clientY, card);
   });
 }
@@ -782,8 +798,25 @@ function zoneMatches(ex, dz){
   return ex.depth === dz.dataset.depth;
 }
 
+// Finds the best drop target near (px,py): exact hit first, then nearest
+// zone within SNAP_TOLERANCE so near-misses still register as a drop.
+function findTargetZone(px, py){
+  var el = document.elementFromPoint(px, py);
+  var exact = el ? el.closest('.dropzone') : null;
+  if(exact) return exact;
+  var best = null, bestDist = Infinity;
+  document.querySelectorAll('.dropzone').forEach(function(dz){
+    var r = dz.getBoundingClientRect();
+    var dx = Math.max(r.left - px, 0, px - r.right);
+    var dy = Math.max(r.top - py, 0, py - r.bottom);
+    var dist = Math.sqrt(dx*dx + dy*dy);
+    if(dist < bestDist){ bestDist = dist; best = dz; }
+  });
+  return (best && bestDist <= SNAP_TOLERANCE) ? best : null;
+}
+
 function startDrag(ex, x, y, sourceEl){
-  dragging = { ex: ex, pointerX: x, pointerY: y, scrollRaf: null };
+  dragging = { ex: ex, pointerX: x, pointerY: y, scrollRaf: null, hoverZone: null };
   var ghost = document.createElement('div');
   ghost.className = 'drag-ghost';
   ghost.textContent = ex.name;
@@ -794,26 +827,42 @@ function startDrag(ex, x, y, sourceEl){
   dragging.sourceEl = sourceEl;
 
   highlightZones(ex, true);
+  updateHover(x, y);
 
   function onMove(ev){
     dragging.pointerX = ev.clientX;
     dragging.pointerY = ev.clientY;
     positionGhost(ghost, ev.clientX, ev.clientY);
+    updateHover(ev.clientX, ev.clientY);
   }
   function onUp(ev){
     window.removeEventListener('pointermove', onMove);
     window.removeEventListener('pointerup', onUp);
+    window.removeEventListener('pointercancel', onUp);
     stopAutoScroll();
     finishDrag(ev.clientX, ev.clientY);
   }
   window.addEventListener('pointermove', onMove);
   window.addEventListener('pointerup', onUp);
+  window.addEventListener('pointercancel', onUp);
   startAutoScroll();
+}
+
+function updateHover(x, y){
+  if(!dragging) return;
+  var zone = findTargetZone(x, y);
+  if(dragging.hoverZone && dragging.hoverZone !== zone){
+    dragging.hoverZone.classList.remove('hover-active','hover-reject');
+  }
+  if(zone && zone !== dragging.hoverZone){
+    zone.classList.add(zoneMatches(dragging.ex, zone) ? 'hover-active' : 'hover-reject');
+  }
+  dragging.hoverZone = zone;
 }
 
 function startAutoScroll(){
   function tick(){
-    if(!dragging){ dragging = null; return; }
+    if(!dragging){ return; }
     var y = dragging.pointerY;
     var vh = window.innerHeight;
     var speed = 0;
@@ -827,6 +876,7 @@ function startAutoScroll(){
     if(speed !== 0){
       window.scrollBy(0, speed);
       if(dragging.ghost) positionGhost(dragging.ghost, dragging.pointerX, dragging.pointerY);
+      updateHover(dragging.pointerX, dragging.pointerY);
     }
     dragging.scrollRaf = requestAnimationFrame(tick);
   }
@@ -847,7 +897,7 @@ function positionGhost(ghost, x, y){
 
 function highlightZones(ex, on){
   document.querySelectorAll('.dropzone').forEach(function(dz){
-    if(!on){ dz.classList.remove('valid-target','invalid-target'); return; }
+    if(!on){ dz.classList.remove('valid-target','invalid-target','hover-active','hover-reject'); return; }
     if(zoneMatches(ex, dz)) dz.classList.add('valid-target');
     else dz.classList.add('invalid-target');
   });
@@ -861,8 +911,7 @@ function finishDrag(x, y){
   if(dragging.sourceEl) dragging.sourceEl.classList.remove('dragging-source');
   highlightZones(ex, false);
 
-  var el = document.elementFromPoint(x, y);
-  var dz = el ? el.closest('.dropzone') : null;
+  var dz = findTargetZone(x, y);
   if(dz){
     if(zoneMatches(ex, dz)){
       var sectionId = dz.dataset.sectionId;
