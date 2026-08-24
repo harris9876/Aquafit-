@@ -766,6 +766,8 @@ function renderSlotItem(item, sectionId, depth){
 
 // ---------------- drag & drop (pointer events) ----------------
 var dragging = null; // {ex, ghost}
+var AUTOSCROLL_EDGE = 90; // px from top/bottom edge that triggers scrolling
+var AUTOSCROLL_MAX_SPEED = 16; // px per animation frame
 
 function attachDrag(card, ex){
   card.addEventListener('pointerdown', function(e){
@@ -781,7 +783,7 @@ function zoneMatches(ex, dz){
 }
 
 function startDrag(ex, x, y, sourceEl){
-  dragging = { ex: ex };
+  dragging = { ex: ex, pointerX: x, pointerY: y, scrollRaf: null };
   var ghost = document.createElement('div');
   ghost.className = 'drag-ghost';
   ghost.textContent = ex.name;
@@ -794,15 +796,48 @@ function startDrag(ex, x, y, sourceEl){
   highlightZones(ex, true);
 
   function onMove(ev){
+    dragging.pointerX = ev.clientX;
+    dragging.pointerY = ev.clientY;
     positionGhost(ghost, ev.clientX, ev.clientY);
   }
   function onUp(ev){
     window.removeEventListener('pointermove', onMove);
     window.removeEventListener('pointerup', onUp);
+    stopAutoScroll();
     finishDrag(ev.clientX, ev.clientY);
   }
   window.addEventListener('pointermove', onMove);
   window.addEventListener('pointerup', onUp);
+  startAutoScroll();
+}
+
+function startAutoScroll(){
+  function tick(){
+    if(!dragging){ dragging = null; return; }
+    var y = dragging.pointerY;
+    var vh = window.innerHeight;
+    var speed = 0;
+    if(y < AUTOSCROLL_EDGE){
+      var t = (AUTOSCROLL_EDGE - y) / AUTOSCROLL_EDGE; // 0..1
+      speed = -Math.ceil(t * AUTOSCROLL_MAX_SPEED);
+    } else if(y > vh - AUTOSCROLL_EDGE){
+      var t2 = (y - (vh - AUTOSCROLL_EDGE)) / AUTOSCROLL_EDGE; // 0..1
+      speed = Math.ceil(t2 * AUTOSCROLL_MAX_SPEED);
+    }
+    if(speed !== 0){
+      window.scrollBy(0, speed);
+      if(dragging.ghost) positionGhost(dragging.ghost, dragging.pointerX, dragging.pointerY);
+    }
+    dragging.scrollRaf = requestAnimationFrame(tick);
+  }
+  dragging.scrollRaf = requestAnimationFrame(tick);
+}
+
+function stopAutoScroll(){
+  if(dragging && dragging.scrollRaf){
+    cancelAnimationFrame(dragging.scrollRaf);
+    dragging.scrollRaf = null;
+  }
 }
 
 function positionGhost(ghost, x, y){
@@ -821,6 +856,7 @@ function highlightZones(ex, on){
 function finishDrag(x, y){
   if(!dragging) return;
   var ex = dragging.ex;
+  stopAutoScroll();
   if(dragging.ghost) dragging.ghost.remove();
   if(dragging.sourceEl) dragging.sourceEl.classList.remove('dragging-source');
   highlightZones(ex, false);
