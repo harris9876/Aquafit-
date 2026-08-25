@@ -95,6 +95,24 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
   .app{flex-direction:row; align-items:flex-start;}
   .library{width:300px; flex:0 0 300px; position:sticky; top:16px;}
 }
+.plan-col-wrap{flex:1; min-width:0; display:flex; flex-direction:column; gap:12px;}
+
+.plan-toolbar{
+  display:flex; align-items:center; flex-wrap:wrap; gap:10px;
+}
+.randomize-btn{
+  background:var(--buoy);
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  padding:9px 16px;
+  font-size:13px; font-weight:700;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.randomize-btn:hover{background:var(--buoy-dark);}
+.randomize-btn:active{transform:scale(.98);}
+.toolbar-hint{font-size:11.5px; color:var(--ink-soft); line-height:1.4;}
 
 /* ---------- library ---------- */
 .library{
@@ -185,7 +203,6 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
 
 /* ---------- plan columns ---------- */
 .plan-wrap{
-  flex:1;
   display:grid;
   grid-template-columns:1fr;
   gap:0;
@@ -445,15 +462,21 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
     </details>
   </div>
 
-  <div class="plan-wrap" id="planWrap">
-    <div class="col col-shallow" id="colShallow">
-      <div class="col-head"><h2>Shallow Water</h2><span class="depth-mark">~3.5–4.5 ft</span></div>
-      <div id="sectionsShallow"></div>
+  <div class="plan-col-wrap">
+    <div class="plan-toolbar">
+      <button id="randomFillBtn" class="randomize-btn" type="button">&#127922; Randomly fill exercises</button>
+      <span class="toolbar-hint">Fills every CV/ME slot with a random matching pick &ndash; replaces anything already there.</span>
     </div>
-    <div class="lane-rope"></div>
-    <div class="col col-deep" id="colDeep">
-      <div class="col-head"><h2>Deep Water</h2><span class="depth-mark">flotation belts</span></div>
-      <div id="sectionsDeep"></div>
+    <div class="plan-wrap" id="planWrap">
+      <div class="col col-shallow" id="colShallow">
+        <div class="col-head"><h2>Shallow Water</h2><span class="depth-mark">~3.5–4.5 ft</span></div>
+        <div id="sectionsShallow"></div>
+      </div>
+      <div class="lane-rope"></div>
+      <div class="col col-deep" id="colDeep">
+        <div class="col-head"><h2>Deep Water</h2><span class="depth-mark">flotation belts</span></div>
+        <div id="sectionsDeep"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -555,6 +578,51 @@ function ensureFixedText(id){
     state.fixedText[id] = {shallow: defaults.shallow, deep: defaults.deep};
   }
   return state.fixedText[id];
+}
+
+// ---------------- random fill ----------------
+function shuffle(arr){
+  var a = arr.slice();
+  for(var i = a.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+function fillSlotRandom(sectionId, depth, category, count){
+  var slot = ensureSlot(sectionId);
+  var candidates = state.library.filter(function(ex){
+    return ex.category === category && (ex.depth === 'both' || ex.depth === depth);
+  });
+  var picks = shuffle(candidates).slice(0, count);
+  slot[depth] = picks.map(function(ex){ return { name: ex.name, dosage: ex.dosage || '' }; });
+}
+function anyDropzoneHasContent(){
+  var sections = allSections();
+  for(var s = 0; s < sections.length; s++){
+    var sec = sections[s];
+    if(sec.type !== 'dropzone' && sec.type !== 'mixed') continue;
+    var slot = ensureSlot(sec.id);
+    if(slot.shallow.length || slot.deep.length) return true;
+  }
+  return false;
+}
+function randomFillAll(){
+  if(anyDropzoneHasContent()){
+    var ok = window.confirm('This will replace the exercises already placed in the CV/ME slots. Continue?');
+    if(!ok) return;
+  }
+  ['shallow','deep'].forEach(function(depth){
+    fillSlotRandom('cv-warmup', depth, 'cardio', 2);
+    for(var i = 1; i <= state.blockPairs; i++){
+      fillSlotRandom('cv-block-'+i, depth, 'cardio', 3);
+      fillSlotRandom('me-block-'+i, depth, 'muscle', 3);
+    }
+  });
+  persist();
+  renderColumn('shallow');
+  renderColumn('deep');
+  renderSummary();
 }
 
 // ---------------- persistence ----------------
@@ -1041,6 +1109,9 @@ document.getElementById('summaryToggle').addEventListener('click', function(){
   panel.style.display = showing ? 'none' : 'block';
   this.textContent = showing ? 'View plan as document' : 'Hide document view';
   if(!showing) renderSummary();
+});
+document.getElementById('randomFillBtn').addEventListener('click', function(){
+  randomFillAll();
 });
 document.getElementById('customForm').addEventListener('submit', function(e){
   e.preventDefault();
