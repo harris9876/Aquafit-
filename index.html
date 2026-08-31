@@ -543,6 +543,7 @@ var state = {
   blockPairs: 3, // number of CV blocks == number of ME blocks, alternating (range 3-6)
   slots: {}, // key -> {shallow:[items], deep:[items]} — only used by drag-and-drop (workout phase) sections
   fixedText: {}, // key -> {shallow:"...", deep:"..."} — used by fixed/script sections
+  blockMuscle: {}, // me-block id -> targeted muscle group name (set by random fill)
   reminders: DEFAULT_REMINDERS
 };
 
@@ -563,7 +564,9 @@ function allSections(){
   var sections = fixedPreSections().slice();
   for(var i=1; i<=state.blockPairs; i++){
     sections.push({id:'cv-block-'+i, title:'Cardiovascular Conditioning – Block '+i, category:'cardio', type:'dropzone', note:'RPE check + water break'});
-    sections.push({id:'me-block-'+i, title:'Muscular Conditioning – Block '+i, category:'muscle', type:'dropzone', note:'Target muscle group'});
+    var meId = 'me-block-'+i;
+    var targeted = state.blockMuscle[meId];
+    sections.push({id:meId, title:'Muscular Conditioning – Block '+i, category:'muscle', type:'dropzone', note: targeted ? ('Target: '+targeted) : 'Target muscle group'});
   }
   sections = sections.concat(fixedPostSections());
   return sections;
@@ -597,6 +600,14 @@ function fillSlotRandom(sectionId, depth, category, count){
   var picks = shuffle(candidates).slice(0, count);
   slot[depth] = picks.map(function(ex){ return { name: ex.name, dosage: ex.dosage || '' }; });
 }
+function fillSlotRandomByGroup(sectionId, depth, category, group, count){
+  var slot = ensureSlot(sectionId);
+  var candidates = state.library.filter(function(ex){
+    return ex.category === category && ex.group === group && (ex.depth === 'both' || ex.depth === depth);
+  });
+  var picks = shuffle(candidates).slice(0, count);
+  slot[depth] = picks.map(function(ex){ return { name: ex.name, dosage: ex.dosage || '' }; });
+}
 function anyDropzoneHasContent(){
   var sections = allSections();
   for(var s = 0; s < sections.length; s++){
@@ -612,13 +623,34 @@ function randomFillAll(){
     var ok = window.confirm('This will replace the exercises already placed in the CV/ME slots. Continue?');
     if(!ok) return;
   }
-  ['shallow','deep'].forEach(function(depth){
-    fillSlotRandom('cv-warmup', depth, 'cardio', 2);
-    for(var i = 1; i <= state.blockPairs; i++){
-      fillSlotRandom('cv-block-'+i, depth, 'cardio', 3);
-      fillSlotRandom('me-block-'+i, depth, 'muscle', 3);
+
+  // pick one muscle group per ME block (no repeats across blocks where possible),
+  // so a block targets the same muscle in both Shallow and Deep water.
+  var allMuscleGroups = [];
+  var seenGroups = {};
+  state.library.forEach(function(ex){
+    if(ex.category === 'muscle' && ex.group && !seenGroups[ex.group]){
+      seenGroups[ex.group] = true;
+      allMuscleGroups.push(ex.group);
     }
   });
+  var groupOrder = shuffle(allMuscleGroups);
+
+  fillSlotRandom('cv-warmup', 'shallow', 'cardio', 2);
+  fillSlotRandom('cv-warmup', 'deep', 'cardio', 2);
+
+  for(var i = 1; i <= state.blockPairs; i++){
+    fillSlotRandom('cv-block-'+i, 'shallow', 'cardio', 3);
+    fillSlotRandom('cv-block-'+i, 'deep', 'cardio', 3);
+
+    var meId = 'me-block-'+i;
+    var group = groupOrder.length ? groupOrder[(i-1) % groupOrder.length] : null;
+    state.blockMuscle[meId] = group;
+    if(group){
+      fillSlotRandomByGroup(meId, 'shallow', 'muscle', group, 3);
+      fillSlotRandomByGroup(meId, 'deep', 'muscle', group, 3);
+    }
+  }
   persist();
   renderColumn('shallow');
   renderColumn('deep');
@@ -645,6 +677,7 @@ function persist(){
       blockPairs: state.blockPairs,
       slots: state.slots,
       fixedText: state.fixedText,
+      blockMuscle: state.blockMuscle,
       reminders: state.reminders
     };
     if(!hasStorage()){ markSaved(); return; }
@@ -677,6 +710,7 @@ function load(){
           state.blockPairs = (pairs >= MIN_PAIRS && pairs <= MAX_PAIRS) ? pairs : state.blockPairs;
           state.slots = data.slots || {};
           state.fixedText = (data.fixedText && typeof data.fixedText === 'object') ? data.fixedText : {};
+          state.blockMuscle = (data.blockMuscle && typeof data.blockMuscle === 'object') ? data.blockMuscle : {};
           state.reminders = (typeof data.reminders === 'string') ? data.reminders : DEFAULT_REMINDERS;
         }catch(e){ console.error('Parse failed', e); }
       }
