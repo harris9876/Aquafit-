@@ -166,16 +166,6 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
   font-size:10.5px; color:var(--ink-soft); font-weight:500; margin-top:2px;
 }
 .ex-card.dragging-source{opacity:.35;}
-.depth-badge{
-  position:absolute; top:6px; right:6px;
-  font-family:'JetBrains Mono',monospace;
-  font-size:9px; font-weight:700;
-  padding:1px 5px; border-radius:4px;
-  letter-spacing:.02em;
-}
-.depth-badge.depth-shallow{background:#DCEFEE; color:var(--deep);}
-.depth-badge.depth-deep{background:var(--deep); color:#EAF7F5;}
-.depth-badge.depth-both{background:var(--lane); color:#5A4200;}
 
 .add-custom{
   border-top:1px dashed var(--line);
@@ -201,42 +191,26 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
 }
 .add-custom button:hover{background:var(--buoy-dark);}
 
-/* ---------- plan columns ---------- */
+/* ---------- plan column ---------- */
 .plan-wrap{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:0;
+  display:block;
   border-radius:var(--radius);
   overflow:hidden;
   border:1px solid var(--line);
   position:relative;
-}
-@media(min-width:720px){
-  .plan-wrap{grid-template-columns:1fr 20px 1fr;}
 }
 .col{
   padding:16px 14px 24px;
   display:flex; flex-direction:column; gap:14px;
 }
 .col-shallow{background:var(--shallow); }
-.col-deep{background:var(--deep); color:#EAF7F5;}
 .col-head{
   display:flex; align-items:baseline; justify-content:space-between;
   margin-bottom:2px;
 }
 .col-head h2{font-size:15px; margin:0; font-weight:600; letter-spacing:.03em; text-transform:uppercase;}
 .col-shallow .col-head h2{color:var(--deep);}
-.col-deep .col-head h2{color:#EAF7F5;}
 .col-head .depth-mark{font-family:'JetBrains Mono',monospace; font-size:10px; opacity:.6;}
-
-.lane-rope{
-  display:none;
-  background:repeating-linear-gradient(180deg,var(--lane) 0 10px, transparent 10px 20px);
-  width:3px;
-  margin:0 auto;
-  opacity:.6;
-}
-@media(min-width:720px){.lane-rope{display:block;}}
 
 .section{
   border-radius:8px;
@@ -248,12 +222,10 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
 .section-head h3{
   font-size:14px; margin:0; font-weight:500; font-style:italic;
 }
-.col-deep .section-head h3{color:#CFEAE5;}
 .col-shallow .section-head h3{color:var(--deep);}
 .section-note{
   font-size:10.5px; color:var(--ink-soft); font-style:normal;
 }
-.col-deep .section-note{color:#8FBDB5;}
 .section-eyebrow{
   font-size:10px; text-transform:uppercase; letter-spacing:.08em; opacity:.55;
 }
@@ -268,17 +240,12 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
   background:rgba(255,255,255,.5);
   transition:border-color .12s ease, background .12s ease, box-shadow .12s ease, transform .12s ease;
 }
-.col-deep .dropzone{
-  border-color:var(--line-deep);
-  background:rgba(255,255,255,.04);
-}
 .dropzone:empty::before{
   content:"Drop exercises here";
   font-size:11.5px;
   color:var(--ink-soft);
   opacity:.55;
 }
-.col-deep .dropzone:empty::before{color:#7BAAA2;}
 .dropzone.valid-target{
   border-color:var(--good);
   box-shadow:0 0 0 3px rgba(46,158,122,.12);
@@ -314,10 +281,6 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
   padding:6px 8px;
   display:flex; align-items:flex-start; gap:8px;
 }
-.col-deep .slot-item{
-  background:rgba(255,255,255,.08);
-  border-color:rgba(255,255,255,.18);
-}
 .slot-item .name{font-size:12.5px; font-weight:600; flex:1;}
 .slot-item input.dosage-input{
   font-family:'JetBrains Mono',monospace;
@@ -329,13 +292,11 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
   padding:0; margin-top:2px;
   outline:none;
 }
-.col-deep .slot-item input.dosage-input{color:#AEDCD4;}
 .slot-item .remove{
   background:none; border:none; color:var(--ink-soft);
   font-size:14px; cursor:pointer; line-height:1; padding:2px 4px;
   flex:none;
 }
-.col-deep .slot-item .remove{color:#8FBDB5;}
 .slot-item .remove:hover{color:var(--buoy);}
 
 .add-block-row{
@@ -351,29 +312,12 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
   font-size:13px; font-weight:700;
   cursor:pointer;
 }
-.col-deep .add-block-btn{color:var(--lane); border-color:var(--lane);}
 .add-block-btn:hover{background:rgba(255,122,69,.08);}
 .add-block-btn:disabled{opacity:.3; cursor:not-allowed;}
 .add-block-btn:disabled:hover{background:transparent;}
 .block-count-label{
   font-size:11.5px; font-weight:600; color:var(--ink-soft); text-align:center;
 }
-.col-deep .block-count-label{color:#AEDCD4;}
-
-.reminders{
-  border-top:1px dashed var(--line);
-  padding-top:10px; margin-top:4px;
-}
-.col-deep .reminders{border-top-color:var(--line-deep);}
-.reminders h3{font-size:12px; text-transform:uppercase; letter-spacing:.06em; margin:0 0 6px;}
-.reminders textarea{
-  width:100%; min-height:70px; resize:vertical;
-  font-family:'Inter',sans-serif; font-size:12px;
-  border:1px solid var(--line); border-radius:6px; padding:8px;
-  background:rgba(255,255,255,.6);
-  color:inherit;
-}
-.col-deep .reminders textarea{background:rgba(255,255,255,.07); border-color:var(--line-deep); color:#EAF7F5;}
 
 .fixed-text-readonly{
   width:100%;
@@ -385,7 +329,6 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
   box-sizing:border-box;
   margin-bottom:8px;
 }
-.col-deep .fixed-text-readonly{background:rgba(255,255,255,.05); border-color:var(--line-deep); color:#DCEFEE;}
 
 /* ---------- summary ---------- */
 .summary-toggle{
@@ -427,7 +370,7 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
 
 <div class="topbar">
   <h1>Aquafit Program Builder</h1>
-  <div class="sub">Drag exercises from the library into the matching slot for Shallow or Deep Water.</div>
+  <div class="sub">Drag exercises from the library into the matching workout slot.</div>
   <div class="theme-row">
     <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:220px;">
       <label for="themeInput">Class focus / theme</label>
@@ -440,7 +383,7 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
 <div class="app">
   <div class="library">
     <h2>Exercise Library</h2>
-    <div class="hint">This library covers the Workout/Conditioning phase only &ndash; press and drag a card into a CV or ME block. Orientation, Buoyancy, CV Warm-Up, Warm Down, and Post Class are fixed script text you can edit directly below. The S / D / S·D badge shows shallow-only, deep-only, or either &ndash; cards only fit a matching slot in a matching column.</div>
+    <div class="hint">This library covers the Workout/Conditioning phase only &ndash; press and drag a card into a CV or ME block. Orientation, Buoyancy, CV Warm-Up, Warm Down, and Post Class are fixed script text.</div>
     <div id="libraryGroups"></div>
     <details class="add-custom">
       <summary>Add your own exercise</summary>
@@ -451,11 +394,6 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
           <option value="muscle">Muscular Conditioning</option>
         </select>
         <input id="customGroup" type="text" placeholder="Family or muscle group (optional), e.g. Quadriceps">
-        <select id="customDepth">
-          <option value="both">Shallow or Deep</option>
-          <option value="shallow">Shallow only</option>
-          <option value="deep">Deep only</option>
-        </select>
         <input id="customDosage" type="text" placeholder="Default dosage (optional), e.g. 30 sec · RPE 6">
         <button type="submit">Add to library</button>
       </form>
@@ -469,13 +407,8 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
     </div>
     <div class="plan-wrap" id="planWrap">
       <div class="col col-shallow" id="colShallow">
-        <div class="col-head"><h2>Shallow Water</h2><span class="depth-mark">~3.5–4.5 ft</span></div>
-        <div id="sectionsShallow"></div>
-      </div>
-      <div class="lane-rope"></div>
-      <div class="col col-deep" id="colDeep">
-        <div class="col-head"><h2>Deep Water</h2><span class="depth-mark">flotation belts</span></div>
-        <div id="sectionsDeep"></div>
+        <div class="col-head"><h2>Program Plan</h2><span class="depth-mark">~3.5–4.5 ft</span></div>
+        <div id="sectionsPlan"></div>
       </div>
     </div>
   </div>
@@ -505,53 +438,33 @@ function catColor(k){ for(var i=0;i<CATEGORIES.length;i++) if(CATEGORIES[i].key=
 
 var DEFAULT_LIBRARY = [{"id": "e1", "category": "orientation", "group": "Pre-Class", "name": "Equipment ready check (chair, mat, water shoes, bottle, noodles, speaker)", "dosage": "2 min", "depth": "both"}, {"id": "e2", "category": "orientation", "group": "Pre-Class", "name": "Introduce yourself to newcomers; ask swimming ability & health concerns", "dosage": "2–3 min", "depth": "both"}, {"id": "e3", "category": "orientation", "group": "Pre-Class", "name": "Greet familiar faces, quick health check-in", "dosage": "1 min", "depth": "both"}, {"id": "e4", "category": "orientation", "group": "Pre-Class", "name": "Environmental check: confirm pool and air temperature", "dosage": "30 sec", "depth": "both"}, {"id": "e5", "category": "orientation", "group": "Pre-Class", "name": "Identify non-swimmers through advanced swimmers in the group", "dosage": "1 min", "depth": "both"}, {"id": "e6", "category": "buoyancy", "group": "Thermal Regulate", "name": "Marching/jogging on the spot, hands churning", "dosage": "1 min", "depth": "shallow"}, {"id": "e7", "category": "buoyancy", "group": "Thermal Regulate", "name": "Modified-suspended jogging on the spot, hands churning", "dosage": "1 min", "depth": "deep"}, {"id": "e8", "category": "buoyancy", "group": "Skills Review", "name": "Go over sculling", "dosage": "1 min", "depth": "both"}, {"id": "e9", "category": "buoyancy", "group": "Skills Review", "name": "Go over Jog, Rock, Kick, Ski, Walk, Jump, and Jax", "dosage": "1–2 min", "depth": "shallow"}, {"id": "e10", "category": "buoyancy", "group": "Skills Review", "name": "Go over Jog, Pendulum, Kick, Ski, Cycle, and Jax", "dosage": "1–2 min", "depth": "deep"}, {"id": "e11", "category": "buoyancy", "group": "Skills Review", "name": "Falling checks (side, forward, backward recovery)", "dosage": "1 min", "depth": "both"}, {"id": "e12", "category": "buoyancy", "group": "Equipment", "name": "Closed-cell noodle placement check on deck", "dosage": "30 sec", "depth": "shallow"}, {"id": "e13", "category": "buoyancy", "group": "Equipment", "name": "Closed-cell noodle with you or near strong athletes on deck", "dosage": "30 sec", "depth": "deep"}, {"id": "e14", "category": "buoyancy", "group": "Older Adult Adaptation", "name": "Extra active range-of-motion warm-up (add 5 min for older groups)", "dosage": "5 min", "depth": "both"}, {"id": "e15", "category": "cardio", "group": "Jog / March", "name": "Pedal jog, forefoot stays on the pool bottom", "dosage": "45 sec · RPE 5–6", "depth": "shallow"}, {"id": "e16", "category": "cardio", "group": "Jog / March", "name": "March", "dosage": "45 sec · RPE 5–6", "depth": "shallow"}, {"id": "e17", "category": "cardio", "group": "Jog / March", "name": "Ankles touch in front", "dosage": "45 sec · RPE 5–6", "depth": "shallow"}, {"id": "e18", "category": "cardio", "group": "Jog / March", "name": "Ankles touch to the side", "dosage": "45 sec · RPE 5–6", "depth": "shallow"}, {"id": "e19", "category": "cardio", "group": "Jog / March", "name": "Ankles touch behind", "dosage": "45 sec · RPE 5–6", "depth": "shallow"}, {"id": "e20", "category": "cardio", "group": "Jog / March", "name": "Touch ankle in front and back", "dosage": "45 sec · RPE 5–6", "depth": "shallow"}, {"id": "e21", "category": "cardio", "group": "Jog / March", "name": "Mambo jog (same leg stays forward, same leg stays back)", "dosage": "45 sec · RPE 5–6", "depth": "shallow"}, {"id": "e22", "category": "cardio", "group": "Jog / March", "name": "Step in tires", "dosage": "30 sec · RPE 5–6", "depth": "shallow"}, {"id": "e23", "category": "cardio", "group": "Jog / March", "name": "Rock/jog (one leg stays in front)", "dosage": "45 sec · RPE 5–6", "depth": "shallow"}, {"id": "e24", "category": "cardio", "group": "Jog / March", "name": "Two-foot bounce and jog", "dosage": "30 sec · RPE 5–6", "depth": "shallow"}, {"id": "e25", "category": "cardio", "group": "Jog / March", "name": "Modified rebound jog or march", "dosage": "45 sec · RPE 5–6", "depth": "shallow"}, {"id": "e26", "category": "cardio", "group": "Jog / March", "name": "Cross jog", "dosage": "45 sec · RPE 5–6", "depth": "shallow"}, {"id": "e27", "category": "cardio", "group": "Jog / March", "name": "Can-can jog", "dosage": "45 sec · RPE 5–6", "depth": "shallow"}, {"id": "e28", "category": "cardio", "group": "Jog / March", "name": "Touch or clap under the knees", "dosage": "45 sec · RPE 5–6", "depth": "shallow"}, {"id": "e29", "category": "cardio", "group": "Jog / March", "name": "Jump in and jog/march out", "dosage": "45 sec · RPE 5–6", "depth": "shallow"}, {"id": "e30", "category": "cardio", "group": "Jog / March", "name": "Jog, jog, jog and kick", "dosage": "45 sec · RPE 5–6", "depth": "shallow"}, {"id": "e31", "category": "cardio", "group": "Jog / March", "name": "Super Mario (jog and jump up)", "dosage": "30 sec · RPE 5–6", "depth": "shallow"}, {"id": "e32", "category": "cardio", "group": "Jog / March", "name": "Cha-cha-cha basic move", "dosage": "45 sec · RPE 5–6", "depth": "shallow"}, {"id": "e33", "category": "cardio", "group": "Walk", "name": "Forward walk, both arms flat scull, pull back", "dosage": "45 sec · RPE 4–5", "depth": "shallow"}, {"id": "e34", "category": "cardio", "group": "Walk", "name": "Forward walk, opposite arm and leg", "dosage": "45 sec · RPE 4–5", "depth": "shallow"}, {"id": "e35", "category": "cardio", "group": "Walk", "name": "Sideways walk", "dosage": "45 sec · RPE 4–5", "depth": "shallow"}, {"id": "e36", "category": "cardio", "group": "Walk", "name": "Diagonal walk", "dosage": "45 sec · RPE 4–5", "depth": "shallow"}, {"id": "e37", "category": "cardio", "group": "Walk", "name": "Knee lift front walk", "dosage": "45 sec · RPE 4–5", "depth": "shallow"}, {"id": "e38", "category": "cardio", "group": "Walk", "name": "Knee bend back walk", "dosage": "45 sec · RPE 4–5", "depth": "shallow"}, {"id": "e39", "category": "cardio", "group": "Walk", "name": "Walk with hip rotation (open the gate)", "dosage": "45 sec · RPE 4–5", "depth": "shallow"}, {"id": "e40", "category": "cardio", "group": "Walk", "name": "Backwards walk with flat scull", "dosage": "45 sec · RPE 4–5", "depth": "shallow"}, {"id": "e41", "category": "cardio", "group": "Walk", "name": "Ankle touch walk (forward, side, backward)", "dosage": "45 sec · RPE 4–5", "depth": "shallow"}, {"id": "e42", "category": "cardio", "group": "Walk", "name": "Walk on heels, knees soft", "dosage": "45 sec · RPE 4–5", "depth": "shallow"}, {"id": "e43", "category": "cardio", "group": "Walk", "name": "Walk fast, walk slow", "dosage": "45 sec · RPE 4–5", "depth": "shallow"}, {"id": "e44", "category": "cardio", "group": "Walk", "name": "Big walks, small walks", "dosage": "45 sec · RPE 4–5", "depth": "shallow"}, {"id": "e45", "category": "cardio", "group": "Walk", "name": "Walk and body-check balance", "dosage": "45 sec · RPE 4–5", "depth": "shallow"}, {"id": "e46", "category": "cardio", "group": "Walk", "name": "Grapevine walk", "dosage": "45 sec · RPE 4–5", "depth": "shallow"}, {"id": "e47", "category": "cardio", "group": "Walk", "name": "Pelvic rock walk (one leg stays forward)", "dosage": "45 sec · RPE 4–5", "depth": "shallow"}, {"id": "e48", "category": "cardio", "group": "Walk", "name": "Chasse (step-together-step)", "dosage": "45 sec · RPE 4–5", "depth": "shallow"}, {"id": "e49", "category": "cardio", "group": "Walk", "name": "Twizzle front", "dosage": "30 sec · RPE 4–5", "depth": "shallow"}, {"id": "e50", "category": "cardio", "group": "Walk", "name": "Twizzle back", "dosage": "30 sec · RPE 4–5", "depth": "shallow"}, {"id": "e51", "category": "cardio", "group": "Walk", "name": "Fall and recover (forward, backward, sideways)", "dosage": "30 sec · RPE 4–5", "depth": "shallow"}, {"id": "e52", "category": "cardio", "group": "Kick", "name": "Front kick", "dosage": "45 sec · RPE 5–7", "depth": "shallow"}, {"id": "e53", "category": "cardio", "group": "Kick", "name": "Side kick", "dosage": "45 sec · RPE 5–7", "depth": "shallow"}, {"id": "e54", "category": "cardio", "group": "Kick", "name": "Back kick", "dosage": "45 sec · RPE 5–7", "depth": "shallow"}, {"id": "e55", "category": "cardio", "group": "Kick", "name": "Front and back kick, same side", "dosage": "45 sec · RPE 5–7", "depth": "shallow"}, {"id": "e56", "category": "cardio", "group": "Kick", "name": "Easy neutral kicks", "dosage": "45 sec · RPE 5–7", "depth": "shallow"}, {"id": "e57", "category": "cardio", "group": "Kick", "name": "Flutter kick", "dosage": "45 sec · RPE 5–7", "depth": "shallow"}, {"id": "e58", "category": "cardio", "group": "Kick", "name": "Martial arts kick", "dosage": "30 sec · RPE 5–7", "depth": "shallow"}, {"id": "e59", "category": "cardio", "group": "Kick", "name": "Turn in and turn out, then kick", "dosage": "30 sec · RPE 5–7", "depth": "shallow"}, {"id": "e60", "category": "cardio", "group": "Kick", "name": "Side kick, then ankle touch same leg", "dosage": "30 sec · RPE 5–7", "depth": "shallow"}, {"id": "e61", "category": "cardio", "group": "Rock", "name": "Front and back rock, bent knees", "dosage": "45 sec · RPE 5", "depth": "shallow"}, {"id": "e62", "category": "cardio", "group": "Rock", "name": "Side to side rock, leg straight", "dosage": "45 sec · RPE 5", "depth": "shallow"}, {"id": "e63", "category": "cardio", "group": "Rock", "name": "Hamstring and kick rock", "dosage": "30 sec · RPE 5", "depth": "shallow"}, {"id": "e64", "category": "cardio", "group": "Rock", "name": "Rock-rock-rock and kick", "dosage": "30 sec · RPE 5", "depth": "shallow"}, {"id": "e65", "category": "cardio", "group": "Ski (Cross-Country)", "name": "Cross-country ski, opposite arms to legs", "dosage": "45 sec · RPE 5–6", "depth": "shallow"}, {"id": "e66", "category": "cardio", "group": "Ski (Cross-Country)", "name": "Ski knee tuck", "dosage": "45 sec · RPE 5–6", "depth": "shallow"}, {"id": "e67", "category": "cardio", "group": "Ski (Cross-Country)", "name": "Skating, turned out", "dosage": "30 sec · RPE 5–6", "depth": "shallow"}, {"id": "e68", "category": "cardio", "group": "Ski (Cross-Country)", "name": "Ski, same side stays forward", "dosage": "30 sec · RPE 5–6", "depth": "shallow"}, {"id": "e69", "category": "cardio", "group": "Ski (Cross-Country)", "name": "Ski with diagonal reach or twist", "dosage": "30 sec · RPE 5–6", "depth": "shallow"}, {"id": "e70", "category": "cardio", "group": "Ski (Cross-Country)", "name": "Elliptical ski, movement from the hips", "dosage": "45 sec · RPE 5–6", "depth": "shallow"}, {"id": "e71", "category": "cardio", "group": "Ski (Cross-Country)", "name": "Hurdler ski (front leg straight, back leg bent)", "dosage": "30 sec · RPE 5–6", "depth": "shallow"}, {"id": "e72", "category": "cardio", "group": "Ski (Cross-Country)", "name": "Power pop ski, alternating legs", "dosage": "30 sec · RPE 5–6", "depth": "shallow"}, {"id": "e73", "category": "cardio", "group": "Jump", "name": "Two-foot jump, arms push down to propel up", "dosage": "30 sec · RPE 6–7", "depth": "shallow"}, {"id": "e74", "category": "cardio", "group": "Jump", "name": "Side-to-side ski jump (moguls)", "dosage": "30 sec · RPE 6–7", "depth": "shallow"}, {"id": "e75", "category": "cardio", "group": "Jump", "name": "Twist jump, knees soft", "dosage": "30 sec · RPE 6–7", "depth": "shallow"}, {"id": "e76", "category": "cardio", "group": "Jump", "name": "Frog jump", "dosage": "30 sec · RPE 6–7", "depth": "shallow"}, {"id": "e77", "category": "cardio", "group": "Jump", "name": "Forward and backward jump", "dosage": "30 sec · RPE 6–7", "depth": "shallow"}, {"id": "e78", "category": "cardio", "group": "Jump", "name": "Ankle pops", "dosage": "20 sec · RPE 6–7", "depth": "shallow"}, {"id": "e79", "category": "cardio", "group": "Jump", "name": "Jackie Chan (center, two-foot jump to the side)", "dosage": "30 sec · RPE 6–7", "depth": "shallow"}, {"id": "e80", "category": "cardio", "group": "Jump", "name": "Hopscotch (hop, hop, hop, land on two feet)", "dosage": "30 sec · RPE 6–7", "depth": "shallow"}, {"id": "e81", "category": "cardio", "group": "Jump", "name": "Oblique jump", "dosage": "30 sec · RPE 6–7", "depth": "shallow"}, {"id": "e82", "category": "cardio", "group": "Jax (Jumping Jacks)", "name": "Jax, same arms and legs", "dosage": "45 sec · RPE 6", "depth": "shallow"}, {"id": "e83", "category": "cardio", "group": "Jax (Jumping Jacks)", "name": "Jax, opposite arms and legs", "dosage": "45 sec · RPE 6", "depth": "shallow"}, {"id": "e84", "category": "cardio", "group": "Jax (Jumping Jacks)", "name": "Jax and knee tuck", "dosage": "30 sec · RPE 6", "depth": "shallow"}, {"id": "e85", "category": "cardio", "group": "Jax (Jumping Jacks)", "name": "Jax scoop in, jump out", "dosage": "30 sec · RPE 6", "depth": "shallow"}, {"id": "e86", "category": "cardio", "group": "Jax (Jumping Jacks)", "name": "Jax scoop out, jump in", "dosage": "30 sec · RPE 6", "depth": "shallow"}, {"id": "e87", "category": "cardio", "group": "Jax (Jumping Jacks)", "name": "Jax and ankle touch", "dosage": "30 sec · RPE 6", "depth": "shallow"}, {"id": "e88", "category": "cardio", "group": "Jax (Jumping Jacks)", "name": "Jax side hitch (tilt sideways)", "dosage": "30 sec · RPE 6", "depth": "shallow"}, {"id": "e89", "category": "cardio", "group": "Jax (Jumping Jacks)", "name": "4 jax and 1/4 turn (repeat)", "dosage": "30 sec · RPE 6", "depth": "shallow"}, {"id": "e90", "category": "cardio", "group": "Jog / March", "name": "Suspended jog with hands churning", "dosage": "45 sec · RPE 6–7", "depth": "deep"}, {"id": "e91", "category": "cardio", "group": "Jog / March", "name": "Cross jog", "dosage": "45 sec · RPE 6–7", "depth": "deep"}, {"id": "e92", "category": "cardio", "group": "Jog / March", "name": "Jog and jump with a turn", "dosage": "30 sec · RPE 6–7", "depth": "deep"}, {"id": "e93", "category": "cardio", "group": "Jog / March", "name": "Modified-suspended march with hands churning", "dosage": "45 sec · RPE 6–7", "depth": "deep"}, {"id": "e94", "category": "cardio", "group": "Jog / March", "name": "Pendulum march", "dosage": "30 sec · RPE 6–7", "depth": "deep"}, {"id": "e95", "category": "cardio", "group": "Jog / March", "name": "Pendulum jog tilts", "dosage": "30 sec · RPE 6–7", "depth": "deep"}, {"id": "e96", "category": "cardio", "group": "Walk / Cycle", "name": "Prone cycling forward in a circle, arms assisting", "dosage": "45 sec · RPE 6–7", "depth": "deep"}, {"id": "e97", "category": "cardio", "group": "Walk / Cycle", "name": "Prone cycling backward in a circle", "dosage": "45 sec · RPE 6–7", "depth": "deep"}, {"id": "e98", "category": "cardio", "group": "Walk / Cycle", "name": "Side-tilt cycling left and right", "dosage": "30 sec · RPE 6–7", "depth": "deep"}, {"id": "e99", "category": "cardio", "group": "Kick", "name": "Dolphin kick, suspended", "dosage": "30 sec · RPE 6–7", "depth": "deep"}, {"id": "e100", "category": "cardio", "group": "Kick", "name": "Flutter kick, vertical", "dosage": "30 sec · RPE 6–7", "depth": "deep"}, {"id": "e101", "category": "cardio", "group": "Kick", "name": "Russian split kick", "dosage": "30 sec · RPE 6–7", "depth": "deep"}, {"id": "e102", "category": "cardio", "group": "Ski (Cross-Country)", "name": "Elliptical ski, suspended, asynchronous basketball-player arms", "dosage": "45 sec · RPE 6–7", "depth": "deep"}, {"id": "e103", "category": "cardio", "group": "Ski (Cross-Country)", "name": "Elliptical ski, synchronous skier-push arms", "dosage": "45 sec · RPE 6–7", "depth": "deep"}, {"id": "e104", "category": "cardio", "group": "Ski (Cross-Country)", "name": "Side modified suspended ski", "dosage": "30 sec · RPE 6–7", "depth": "deep"}, {"id": "e105", "category": "cardio", "group": "Ski (Cross-Country)", "name": "Bicycle imitating a road bike, large ROM", "dosage": "45 sec · RPE 6–7", "depth": "deep"}, {"id": "e106", "category": "cardio", "group": "Ski (Cross-Country)", "name": "Advanced ski with dumbbells, shoulders submerged", "dosage": "30 sec · RPE 6–7", "depth": "deep"}, {"id": "e107", "category": "cardio", "group": "Jax (Jumping Jacks)", "name": "Jax, suspended, oppositional arms and legs", "dosage": "45 sec · RPE 6–7", "depth": "deep"}, {"id": "e108", "category": "cardio", "group": "Jax (Jumping Jacks)", "name": "Jax knee tuck and hold", "dosage": "30 sec · RPE 6–7", "depth": "deep"}, {"id": "e109", "category": "cardio", "group": "Jax (Jumping Jacks)", "name": "Jax knee tuck and suspended jog", "dosage": "30 sec · RPE 6–7", "depth": "deep"}, {"id": "e110", "category": "cardio", "group": "Jax (Jumping Jacks)", "name": "Jax, suspended, faster tempo", "dosage": "30 sec · RPE 6–7", "depth": "deep"}, {"id": "e111", "category": "cardio", "group": "Jump", "name": "One-foot twist", "dosage": "30 sec · RPE 6–7", "depth": "deep"}, {"id": "e112", "category": "cardio", "group": "Jump", "name": "Russian splits", "dosage": "30 sec · RPE 6–7", "depth": "deep"}, {"id": "e113", "category": "cardio", "group": "Jump", "name": "Overhead cheer, controlled arms", "dosage": "30 sec · RPE 6–7", "depth": "deep"}, {"id": "e114", "category": "cardio", "group": "Rock / Pendulum", "name": "Suspended pendulum (tilting side to side)", "dosage": "30 sec · RPE 6–7", "depth": "deep"}, {"id": "e115", "category": "cardio", "group": "Rock / Pendulum", "name": "Suspended Bruce Lee", "dosage": "30 sec · RPE 6–7", "depth": "deep"}, {"id": "e116", "category": "cardio", "group": "Rock / Pendulum", "name": "Tilting in the praying/kneeling position", "dosage": "30 sec · RPE 6–7", "depth": "deep"}, {"id": "e117", "category": "cardio", "group": "CV Warm-Up", "name": "Jax with oppositional hands", "dosage": "45 sec · RPE 5–6", "depth": "both"}, {"id": "e118", "category": "cardio", "group": "CV Warm-Up", "name": "Ski with a knee touch", "dosage": "45 sec · RPE 5–6", "depth": "both"}, {"id": "e119", "category": "cardio", "group": "CV Warm-Up", "name": "Review extended, neutral, rebound, modified-rebound, and suspended positions", "dosage": "1 min", "depth": "shallow"}, {"id": "e120", "category": "cardio", "group": "CV Warm-Up", "name": "Review suspended and modified-suspended positions (barre, hug, armchair, side-lying, bicycle, chair)", "dosage": "1 min", "depth": "deep"}, {"id": "e121", "category": "muscle", "group": "Latissimus Dorsi", "name": "Arms at shoulder height, pull down to the sides or behind the back", "dosage": "10–20 reps × 2", "depth": "shallow"}, {"id": "e122", "category": "muscle", "group": "Latissimus Dorsi", "name": "Suspended bike-noodle lat push-downs", "dosage": "10–20 reps × 2", "depth": "deep"}, {"id": "e123", "category": "muscle", "group": "Latissimus Dorsi", "name": "Bending noodle lat push-downs", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e124", "category": "muscle", "group": "Medial (Middle) Deltoids", "name": "Cross arms and power out", "dosage": "10–20 reps × 3", "depth": "shallow"}, {"id": "e125", "category": "muscle", "group": "Medial (Middle) Deltoids", "name": "Side-lying, power down into the water", "dosage": "10–20 reps × 3", "depth": "deep"}, {"id": "e126", "category": "muscle", "group": "Anterior Deltoids", "name": "Extend arm behind, power-swing through to the front (walking arm)", "dosage": "10–20 reps × 3", "depth": "shallow"}, {"id": "e127", "category": "muscle", "group": "Anterior Deltoids", "name": "Same power-swing, suspended", "dosage": "10–20 reps × 3", "depth": "deep"}, {"id": "e128", "category": "muscle", "group": "Posterior Deltoids", "name": "Raise arm to front, pull down to the back (walking arm)", "dosage": "10–20 reps × 3", "depth": "shallow"}, {"id": "e129", "category": "muscle", "group": "Posterior Deltoids", "name": "Same front-to-back pull-down, suspended", "dosage": "10–20 reps × 3", "depth": "deep"}, {"id": "e130", "category": "muscle", "group": "Pectorals", "name": "Hold arms out to the sides, pull forward and together (hug)", "dosage": "10–20 reps × 3", "depth": "shallow"}, {"id": "e131", "category": "muscle", "group": "Pectorals", "name": "Same hug-in movement, suspended", "dosage": "10–20 reps × 3", "depth": "deep"}, {"id": "e132", "category": "muscle", "group": "Mid-Trapezius & Rhomboids", "name": "Prayer position, pull arms back squeezing shoulder blades, thumbs up", "dosage": "10–20 reps × 3", "depth": "shallow"}, {"id": "e133", "category": "muscle", "group": "Mid-Trapezius & Rhomboids", "name": "Same prayer-position pull, suspended, thumbs up", "dosage": "10–20 reps × 3", "depth": "deep"}, {"id": "e134", "category": "muscle", "group": "Biceps", "name": "Extend arms behind, curl through back to front, emphasize flexion", "dosage": "10–20 reps × 3", "depth": "shallow"}, {"id": "e135", "category": "muscle", "group": "Biceps", "name": "Same curl-through, suspended, emphasis on flexion", "dosage": "10–20 reps × 3", "depth": "deep"}, {"id": "e136", "category": "muscle", "group": "Triceps", "name": "Flex arm to front, extend down to the side, emphasis on extension", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e137", "category": "muscle", "group": "Triceps", "name": "Rock triceps push-downs, hands facing up", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e138", "category": "muscle", "group": "Triceps", "name": "Rock triceps push-downs, hands facing down", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e139", "category": "muscle", "group": "Triceps", "name": "Rock triceps push-downs with a noodle", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e140", "category": "muscle", "group": "Triceps", "name": "Prone triceps push-downs, hands facing up", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e141", "category": "muscle", "group": "Triceps", "name": "Prone triceps push-downs, hands facing down", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e142", "category": "muscle", "group": "Triceps", "name": "Cycling triceps push-downs holding a noodle", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e143", "category": "muscle", "group": "Internal Obliques", "name": "Side-falling moves, controlled", "dosage": "10–20 reps per side", "depth": "shallow"}, {"id": "e144", "category": "muscle", "group": "Internal Obliques", "name": "Pendulum/jog tilts to one side", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e145", "category": "muscle", "group": "Internal Obliques", "name": "Diamond-leg tilts to one side", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e146", "category": "muscle", "group": "External Obliques", "name": "Stand tall, touch front of knee with opposite hand", "dosage": "10–20 reps per side", "depth": "shallow"}, {"id": "e147", "category": "muscle", "group": "External Obliques", "name": "Washing-machine twist (upper body against lower body)", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e148", "category": "muscle", "group": "External Obliques", "name": "Diagonal cross-country twist", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e149", "category": "muscle", "group": "Rectus Abdominis", "name": "Walk tall through the water, change direction abruptly", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e150", "category": "muscle", "group": "Rectus Abdominis", "name": "Fall forward and pull legs forward, curling hip bones toward rib cage", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e151", "category": "muscle", "group": "Rectus Abdominis", "name": "Balance checks in a suspended working position", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e152", "category": "muscle", "group": "Rectus Abdominis", "name": "Superman and suntan (crunch-like move)", "dosage": "10–20 reps × 2", "depth": "deep"}, {"id": "e153", "category": "muscle", "group": "Transverse Abdominis", "name": "Maintain good posture throughout the segment; cue tall spine and steady breath", "dosage": "3–5 min", "depth": "both"}, {"id": "e154", "category": "muscle", "group": "Erector Spinae", "name": "Rock and power back", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e155", "category": "muscle", "group": "Erector Spinae", "name": "Stand on one leg, opposite hand on knee, pelvic tilt", "dosage": "10–20 reps per side", "depth": "shallow"}, {"id": "e156", "category": "muscle", "group": "Erector Spinae", "name": "Suntan and Superman", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e157", "category": "muscle", "group": "Erector Spinae", "name": "Backward-to-forward pendulum move", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e158", "category": "muscle", "group": "Quadriceps", "name": "Leg back, forward kick from the knee", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e159", "category": "muscle", "group": "Quadriceps", "name": "Forward travel on the cross-country basic move", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e160", "category": "muscle", "group": "Quadriceps", "name": "Backward bicycle, one leg at a time, emphasis forward motion", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e161", "category": "muscle", "group": "Quadriceps", "name": "Hold both legs back, double dolphin kicks forward to travel backward", "dosage": "10–20 reps × 2", "depth": "deep"}, {"id": "e162", "category": "muscle", "group": "Quadriceps", "name": "Backward bicycle with both legs, then one leg only", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e163", "category": "muscle", "group": "Hamstrings", "name": "Walk forward with a leg lift and pull down", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e164", "category": "muscle", "group": "Hamstrings", "name": "Forward bicycle, emphasis on the back motion", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e165", "category": "muscle", "group": "Hamstrings", "name": "Cross-country basic move, power front to back", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e166", "category": "muscle", "group": "Hamstrings", "name": "Hold both legs forward, double dolphin kicks backward to travel forward", "dosage": "10–20 reps × 2", "depth": "deep"}, {"id": "e167", "category": "muscle", "group": "Hamstrings", "name": "Forward bicycle with both legs, then one leg only", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e168", "category": "muscle", "group": "Hip Abductors", "name": "Step to the side, push the lead leg out in direction of travel", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e169", "category": "muscle", "group": "Hip Abductors", "name": "Jax, power leg out and relax in", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e170", "category": "muscle", "group": "Hip Abductors", "name": "Jax with one leg crossing, power out", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e171", "category": "muscle", "group": "Hip Abductors", "name": "Jax, power out and relax in, suspended", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e172", "category": "muscle", "group": "Hip Abductors", "name": "Jax with one leg crossing, power out to travel opposite direction", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e173", "category": "muscle", "group": "Hip Abductors", "name": "Jax in L-sit, power out with assisting upright breast stroke", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e174", "category": "muscle", "group": "Hip Adductors", "name": "Step sideways, emphasis on bringing following leg into lead leg", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e175", "category": "muscle", "group": "Hip Adductors", "name": "Jax, power in and relax out", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e176", "category": "muscle", "group": "Hip Adductors", "name": "Jax, power in and relax out, suspended", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e177", "category": "muscle", "group": "Hip Adductors", "name": "Jax with one leg, power in to travel opposite direction", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e178", "category": "muscle", "group": "Hip Adductors", "name": "Jax in L-sit, power in with assisting pectoral hug, traveling back", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e179", "category": "muscle", "group": "Gluteus Maximus", "name": "Walk-kick back while traveling backward", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e180", "category": "muscle", "group": "Gluteus Maximus", "name": "Step squats", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e181", "category": "muscle", "group": "Gluteus Maximus", "name": "Road runner", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e182", "category": "muscle", "group": "Gluteus Maximus", "name": "Rebounding moves", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e183", "category": "muscle", "group": "Gluteus Maximus", "name": "Backward power move on cross-country", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e184", "category": "muscle", "group": "Gluteus Maximus", "name": "Flutter kicks traveling backward", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e185", "category": "muscle", "group": "Gluteus Maximus", "name": "Forward bicycle with outward hip rotation", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e186", "category": "muscle", "group": "Iliopsoas", "name": "Walk with long strides, leg back, allow buoyancy to stretch it", "dosage": "30–45 sec per side × 2", "depth": "shallow"}, {"id": "e187", "category": "muscle", "group": "Iliopsoas", "name": "Hold in cross-country position, straighten the back leg", "dosage": "30–45 sec per side × 2", "depth": "deep"}, {"id": "e188", "category": "muscle", "group": "Gastrocnemius & Soleus (Calves)", "name": "Walk backward with toe-heel action", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e189", "category": "muscle", "group": "Gastrocnemius & Soleus (Calves)", "name": "Any movement holding the toes in a pointed position", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e190", "category": "muscle", "group": "Tibialis Anterior", "name": "Toe taps on the pool floor", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e191", "category": "muscle", "group": "Tibialis Anterior", "name": "Dip and scoop to the front with the toe", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e192", "category": "muscle", "group": "Tibialis Anterior", "name": "Backward bicycle action", "dosage": "10–20 reps", "depth": "shallow"}, {"id": "e193", "category": "muscle", "group": "Tibialis Anterior", "name": "Kick the lower leg into the water to travel backward", "dosage": "10–20 reps", "depth": "deep"}, {"id": "e194", "category": "muscle", "group": "Quadriceps (Gentle)", "name": "Leg back, forward kick from the knee (gentle pace, extended position)", "dosage": "8–15 reps", "depth": "shallow"}, {"id": "e195", "category": "muscle", "group": "Quadriceps (Gentle)", "name": "Hold both legs back, gentle double dolphin kicks forward", "dosage": "8–15 reps", "depth": "deep"}, {"id": "e196", "category": "muscle", "group": "Hamstrings (Gentle)", "name": "Walk forward with a gentle leg lift and pull down", "dosage": "8–15 reps", "depth": "shallow"}, {"id": "e197", "category": "muscle", "group": "Hamstrings (Gentle)", "name": "Hold both legs forward, gentle double dolphin kicks backward", "dosage": "8–15 reps", "depth": "deep"}, {"id": "e198", "category": "muscle", "group": "Gluteus Maximus (Gentle)", "name": "Walk-kick back while traveling backward, gentle pace", "dosage": "8–15 reps", "depth": "shallow"}, {"id": "e199", "category": "muscle", "group": "Gluteus Maximus (Gentle)", "name": "Backward power move on cross-country, gentle pace", "dosage": "8–15 reps", "depth": "deep"}, {"id": "e200", "category": "warmdown", "group": "Shoulders", "name": "Light march while rolling shoulders forward, then back", "dosage": "30 sec", "depth": "shallow"}, {"id": "e201", "category": "warmdown", "group": "Shoulders", "name": "Light cycle while rolling shoulders forward, then back", "dosage": "30 sec", "depth": "deep"}, {"id": "e202", "category": "warmdown", "group": "Shoulders", "name": "Shoulders up-up, down-down, forward-forward, back-back", "dosage": "30 sec", "depth": "both"}, {"id": "e203", "category": "warmdown", "group": "Hamstrings & Low Back", "name": "Walk backwards, let trailing leg float up", "dosage": "30–45 sec", "depth": "shallow"}, {"id": "e204", "category": "warmdown", "group": "Hamstrings & Low Back", "name": "Kick forward, let trailing leg float up", "dosage": "30–45 sec", "depth": "deep"}, {"id": "e205", "category": "warmdown", "group": "Quadriceps", "name": "Walk forward, slowly kick heels toward buttocks, pull with opposite hand", "dosage": "30–45 sec", "depth": "shallow"}, {"id": "e206", "category": "warmdown", "group": "Quadriceps", "name": "Slowly kick heels toward buttocks in cross-country position", "dosage": "30–45 sec", "depth": "deep"}, {"id": "e207", "category": "warmdown", "group": "Iliopsoas", "name": "Walk with long strides to release the iliopsoas", "dosage": "30–45 sec", "depth": "shallow"}, {"id": "e208", "category": "warmdown", "group": "Iliopsoas", "name": "Hold cross-country position, straighten the back leg", "dosage": "30–45 sec", "depth": "deep"}, {"id": "e209", "category": "warmdown", "group": "Gluteus Maximus", "name": "Stretch glutes with a figure-4", "dosage": "20–30 sec per side", "depth": "both"}, {"id": "e210", "category": "warmdown", "group": "Hip Adductors", "name": "Big side walk, stretching outward", "dosage": "20–30 sec", "depth": "shallow"}, {"id": "e211", "category": "warmdown", "group": "Hip Adductors", "name": "V-sit to stretch the hip adductors", "dosage": "20–30 sec", "depth": "deep"}, {"id": "e212", "category": "warmdown", "group": "Hip Abductors", "name": "Kick across the midline, cross legs on jax", "dosage": "20–30 sec", "depth": "shallow"}, {"id": "e213", "category": "warmdown", "group": "Hip Abductors", "name": "Suspended figure-four cross", "dosage": "20–30 sec", "depth": "deep"}, {"id": "e214", "category": "warmdown", "group": "Biceps & Chest", "name": "Walk in circles, arms dragging behind (low then higher)", "dosage": "30–45 sec", "depth": "shallow"}, {"id": "e215", "category": "warmdown", "group": "Biceps & Chest", "name": "Cycle in circles, arms dragging behind (low then higher)", "dosage": "30–45 sec", "depth": "deep"}, {"id": "e216", "category": "warmdown", "group": "Posterior Deltoids", "name": "Hold arms in front of body, shoulders under, move backward", "dosage": "20–30 sec", "depth": "both"}, {"id": "e217", "category": "warmdown", "group": "Latissimus Dorsi", "name": "Reach forward through the water on a diagonal, across the body", "dosage": "20–30 sec", "depth": "both"}, {"id": "e218", "category": "warmdown", "group": "Triceps", "name": "Hand on shoulder, press up below the elbow with the other hand", "dosage": "20–30 sec", "depth": "both"}, {"id": "e219", "category": "warmdown", "group": "Erector Spinae / Rectus Abdominis", "name": "Shoulders under, lean forward at the waist, back on heels", "dosage": "20–30 sec", "depth": "shallow"}, {"id": "e220", "category": "warmdown", "group": "Erector Spinae / Rectus Abdominis", "name": "Big hug forward, hugging the knees", "dosage": "20–30 sec", "depth": "deep"}, {"id": "e221", "category": "warmdown", "group": "Rectus Abdominis", "name": "Lie on the back and do angels in the water", "dosage": "20–30 sec", "depth": "shallow"}, {"id": "e222", "category": "warmdown", "group": "Rectus Abdominis", "name": "Suspended angels in the water", "dosage": "20–30 sec", "depth": "deep"}, {"id": "e223", "category": "warmdown", "group": "Tibialis Anterior", "name": "Place toes behind opposite calf and press forward", "dosage": "20–30 sec", "depth": "both"}, {"id": "e224", "category": "warmdown", "group": "Calves", "name": "Walk and press the heels down", "dosage": "20–30 sec", "depth": "shallow"}, {"id": "e225", "category": "warmdown", "group": "Calves", "name": "Press ball of one foot onto the calf of the other, press heel toward ground", "dosage": "20–30 sec", "depth": "deep"}, {"id": "e226", "category": "warmdown", "group": "Neck", "name": "Gentle side-to-side rocking (avoid tilting backward; hold to the side)", "dosage": "20–30 sec", "depth": "both"}, {"id": "e227", "category": "postclass", "group": "Closing", "name": "Thank everyone for coming, mention seeing them next week", "dosage": "30 sec", "depth": "both"}, {"id": "e228", "category": "postclass", "group": "Closing", "name": "Weekly fitness tip tied to today's focus", "dosage": "30 sec", "depth": "both"}, {"id": "e229", "category": "postclass", "group": "Closing", "name": "Encourage post-workout protein and electrolytes", "dosage": "20 sec", "depth": "both"}, {"id": "e230", "category": "postclass", "group": "Closing", "name": "Invite questions, comments, and concerns", "dosage": "1–2 min", "depth": "both"}, {"id": "e231", "category": "postclass", "group": "Closing", "name": "Tidy up and confirm no one left anything behind", "dosage": "1 min", "depth": "both"}, {"id": "e232", "category": "postclass", "group": "Closing", "name": "Confirm safe pool exit for all participants", "dosage": "1 min", "depth": "both"}];
 
-var DEFAULT_REMINDERS = "Remind participants to hydrate before, during, and after class.\nCheck in with any participants managing joint or balance concerns.\nCue exit from the pool slowly – reserve 2–3 min buffer for safe egress.\nEncourage participants to note how today's RPE felt for next session's adjustment.";
-
 // ---------------- state ----------------
 var MIN_PAIRS = 3, MAX_PAIRS = 6;
 var EN = "\u2013"; // en dash
 
 // Fixed script text for the parts of class that don't change week to week —
-// sourced from the WaterART "Make Your Own" lesson-plan template. Only the
-// workout/conditioning phase below is drag-and-drop.
+// sourced from the WaterART "Make Your Own" lesson-plan template.
 var FIXED_TEXT_DEFAULTS = {
-  'orientation': {
-    shallow: "1. Get organized: confirm chair, mat, water shoes, water bottle, noodles, aqua shoes, and speaker are all ready.\n2. Who's attending: greet newcomers, ask about swimming ability and health concerns; say hello to familiar faces.\n3. Environmental conditions: check that the pool and air temperature are good to go.\n4. Safety: identify non-swimmers through advanced swimmers in the group.",
-    deep: "1. Get organized: confirm chair, mat, water shoes, water bottle, noodles, aqua shoes, and speaker are all ready.\n2. Who's attending: greet newcomers, ask about swimming ability and health concerns; say hello to familiar faces.\n3. Environmental conditions: check that the pool and air temperature are good to go.\n4. Safety: identify non-swimmers through advanced swimmers in the group."
-  },
-  'buoyancy': {
-    shallow: "Thermal regulate " + EN + " march/jog on the spot with hands churning to get warm.\nTeach participants how to handle the water; feel the change from gravity, using arms to help.\nTeach skills to handle water depth.\nCheck equipment " + EN + " good closed-cell noodle near us on deck.\nGo over sculling.\nGo over Jog, Rock, Kick, Ski, Walk, Jump, and Jax.\nFalling checks.",
-    deep: "Thermal regulate " + EN + " (modified) suspended jogging on the spot with hands churning to get warm.\nTeach participants how to handle the water; feel the change from gravity, using arms to help.\nTeach skills to handle water depth.\nCheck equipment " + EN + " good closed-cell noodle with us, or near our strong athletes on deck.\nGo over sculling.\nGo over Jog, Pendulum, Kick, Ski, Cycle, and Jax.\nFalling checks."
-  },
-  'cv-warmup': {
-    shallow: "Gradually raise heart rate; teach RPE (5" + EN + "8, moderate to very hard).\nPosture check " + EN + " re-check spacing in the pool.\nReview working positions: Extended, Neutral, Rebound, Modified Rebound, Modified Suspended, and Suspended.",
-    deep: "Gradually raise heart rate; teach RPE (5" + EN + "8, moderate to very hard).\nPosture check " + EN + " re-check spacing in the pool.\nReview Suspended and Modified Suspended positions: vertical barre, hug, around-the-back armchair, side-lying, bicycle, chair."
-  },
-  'warmdown': {
-    shallow: "Gradually bring heart rate down; maintain thermal regulation; unwind and de-stress.\nRe-stretch tight muscle groups: hamstrings, quadriceps, iliopsoas, glutes, adductors, biceps, anterior deltoids, pecs, erector spinae, calves, neck, fingers.\n\nShoulders " + EN + " light march while rolling shoulders forward then back; then up-up, down-down, forward-forward, back-back.\nHamstrings & low back " + EN + " walk backwards, let the trailing leg float up; add a finger/forearm stretch with hand flexion and extension.\nQuadriceps " + EN + " walk forward, slowly kick heels toward the buttocks, reach the heel with the opposite hand, and push the hips forward to stretch the hip flexors.\nSki in neutral with an elephant-trunk reach to stay warm (step-ski in extended for an easier option).\nBiceps & chest " + EN + " walk in circles with arms dragging behind, low at first then higher, to stretch biceps then chest and front delts.\nGlutes " + EN + " stretch with a figure-4.\nNeck " + EN + " gentle side-to-side rocking, holding to the side (avoid tilting backward).\nCalves " + EN + " walk and press the heels down into the ground.",
-    deep: "Gradually bring heart rate down; maintain thermal regulation; unwind and de-stress.\nRe-stretch tight muscle groups: hamstrings, quadriceps, iliopsoas, glutes, adductors, biceps, anterior deltoids, pecs, erector spinae, calves, neck, fingers.\n\nShoulders " + EN + " light cycle while rolling shoulders forward then back; then up-up, down-down, forward-forward, back-back.\nHamstrings & low back " + EN + " kick forwards and let the trailing leg float up; add a finger/forearm stretch with hand flexion and extension.\nQuadriceps " + EN + " slowly kick heels toward the buttocks, reach the heel with the opposite hand, and push the hips forward to stretch the hip flexors.\nSki in modified suspended with an elephant-trunk reach to stay warm.\nBiceps & chest " + EN + " cycle in circles with arms dragging behind, low at first then higher, to stretch biceps then chest and front delts.\nGlutes " + EN + " move the noodle to the front of the shoulders and stretch with a figure-4.\nNeck " + EN + " gentle side-to-side rocking, holding to the side (avoid tilting backward).\nCalves " + EN + " press the ball of one foot onto the calf of the other and press the heel down toward the ground."
-  },
-  'postclass': {
-    shallow: "Thank everyone for coming, and mention seeing them next week.\nRemind them to enjoy the week outside with some activity.\nEncourage post-workout protein and electrolytes (chocolate milk works).\nInvite questions, comments, and concerns.\nTidy up and confirm no one left anything behind.\nConfirm everyone exits the pool safely.",
-    deep: "Thank everyone for coming, and mention seeing them next week.\nRemind them to enjoy the week outside with some activity.\nEncourage post-workout protein and electrolytes (chocolate milk works).\nInvite questions, comments, and concerns.\nTidy up and confirm no one left anything behind.\nConfirm everyone exits the pool safely."
-  }
+  'orientation': "1. Speaker, chair, and noodle\n2. Greet and ask about health concerns\n3. Make sure pool is warm",
+  'buoyancy': "1. Get warm and jog\n2. Equipment check\n3. Sculling\n4. Moves (Jog, Walk, Kick, Jump, Jax, Rock, Ski)\n5. Fall checks",
+  'cv-warmup': "1. Posture Check and spacing\n2. Jax\n3. Ski through the working positions (Extended, Neutral, Rebound, Modified Rebound, Modified Suspended, Suspended)",
+  'warmdown': "1. Stretch Shoulders, Hamstrings, Quads, Hip Flexors, Forearms + Fingers\n2. Jog with Elephant Trunk\n3. Stretch Biceps, Chest, Triceps, Glutes, Neck, Calves",
+  'postclass': "1. Thank you + don't leave anything behind\n2. Grab some protein and electrolytes\n3. Questions, comments, and concerns"
 };
 
 var state = {
   theme:'',
   library: DEFAULT_LIBRARY.slice(),
   blockPairs: 3, // number of CV blocks == number of ME blocks, alternating (range 3-6)
-  slots: {}, // key -> {shallow:[items], deep:[items]} — only used by drag-and-drop (workout phase) sections
-  fixedText: {}, // key -> {shallow:"...", deep:"..."} — used by fixed/script sections
+  slots: {}, // sectionId -> [items] — only used by drag-and-drop (workout phase) sections
   blockMuscle: {}, // me-block id -> targeted muscle group name (set by random fill)
-  reminders: DEFAULT_REMINDERS
 };
 
 function fixedPreSections(){
   return [
     {id:'orientation', title:'Orientation', type:'fixed'},
     {id:'buoyancy', title:'Buoyancy Warm-Up', type:'fixed'},
-    {id:'cv-warmup', title:'Cardiovascular Warm-Up', type:'mixed', category:'cardio', note:'Movements below vary class to class'}
+    {id:'cv-warmup', title:'Cardiovascular Warm-Up', type:'fixed'}
   ];
 }
 function fixedPostSections(){
@@ -572,15 +485,8 @@ function allSections(){
   return sections;
 }
 function ensureSlot(id){
-  if(!state.slots[id]) state.slots[id] = {shallow:[], deep:[]};
+  if(!state.slots[id]) state.slots[id] = [];
   return state.slots[id];
-}
-function ensureFixedText(id){
-  if(!state.fixedText[id]){
-    var defaults = FIXED_TEXT_DEFAULTS[id] || {shallow:'', deep:''};
-    state.fixedText[id] = {shallow: defaults.shallow, deep: defaults.deep};
-  }
-  return state.fixedText[id];
 }
 
 // ---------------- random fill ----------------
@@ -592,29 +498,28 @@ function shuffle(arr){
   }
   return a;
 }
-function fillSlotRandom(sectionId, depth, category, count){
+function fillSlotRandom(sectionId, category, count){
   var slot = ensureSlot(sectionId);
   var candidates = state.library.filter(function(ex){
-    return ex.category === category && (ex.depth === 'both' || ex.depth === depth);
+    return ex.category === category && ex.depth !== 'deep';
   });
   var picks = shuffle(candidates).slice(0, count);
-  slot[depth] = picks.map(function(ex){ return { name: ex.name, dosage: ex.dosage || '' }; });
+  state.slots[sectionId] = picks.map(function(ex){ return { name: ex.name, dosage: ex.dosage || '' }; });
 }
-function fillSlotRandomByGroup(sectionId, depth, category, group, count){
-  var slot = ensureSlot(sectionId);
+function fillSlotRandomByGroup(sectionId, category, group, count){
   var candidates = state.library.filter(function(ex){
-    return ex.category === category && ex.group === group && (ex.depth === 'both' || ex.depth === depth);
+    return ex.category === category && ex.group === group && ex.depth !== 'deep';
   });
   var picks = shuffle(candidates).slice(0, count);
-  slot[depth] = picks.map(function(ex){ return { name: ex.name, dosage: ex.dosage || '' }; });
+  state.slots[sectionId] = picks.map(function(ex){ return { name: ex.name, dosage: ex.dosage || '' }; });
 }
 function anyDropzoneHasContent(){
   var sections = allSections();
   for(var s = 0; s < sections.length; s++){
     var sec = sections[s];
-    if(sec.type !== 'dropzone' && sec.type !== 'mixed') continue;
+    if(sec.type !== 'dropzone') continue;
     var slot = ensureSlot(sec.id);
-    if(slot.shallow.length || slot.deep.length) return true;
+    if(slot.length) return true;
   }
   return false;
 }
@@ -624,8 +529,7 @@ function randomFillAll(){
     if(!ok) return;
   }
 
-  // pick one muscle group per ME block (no repeats across blocks where possible),
-  // so a block targets the same muscle in both Shallow and Deep water.
+  // pick one muscle group per ME block (no repeats across blocks where possible)
   var allMuscleGroups = [];
   var seenGroups = {};
   state.library.forEach(function(ex){
@@ -636,24 +540,20 @@ function randomFillAll(){
   });
   var groupOrder = shuffle(allMuscleGroups);
 
-  fillSlotRandom('cv-warmup', 'shallow', 'cardio', 2);
-  fillSlotRandom('cv-warmup', 'deep', 'cardio', 2);
+  fillSlotRandom('cv-warmup', 'cardio', 2);
 
   for(var i = 1; i <= state.blockPairs; i++){
-    fillSlotRandom('cv-block-'+i, 'shallow', 'cardio', 3);
-    fillSlotRandom('cv-block-'+i, 'deep', 'cardio', 3);
+    fillSlotRandom('cv-block-'+i, 'cardio', 3);
 
     var meId = 'me-block-'+i;
     var group = groupOrder.length ? groupOrder[(i-1) % groupOrder.length] : null;
     state.blockMuscle[meId] = group;
     if(group){
-      fillSlotRandomByGroup(meId, 'shallow', 'muscle', group, 3);
-      fillSlotRandomByGroup(meId, 'deep', 'muscle', group, 3);
+      fillSlotRandomByGroup(meId, 'muscle', group, 3);
     }
   }
   persist();
-  renderColumn('shallow');
-  renderColumn('deep');
+  renderPlan();
   renderSummary();
 }
 
@@ -676,9 +576,7 @@ function persist(){
       library: state.library,
       blockPairs: state.blockPairs,
       slots: state.slots,
-      fixedText: state.fixedText,
-      blockMuscle: state.blockMuscle,
-      reminders: state.reminders
+      blockMuscle: state.blockMuscle
     };
     if(!hasStorage()){ markSaved(); return; }
     try{
@@ -694,6 +592,13 @@ function persist(){
 function hasStorage(){
   return typeof window !== 'undefined' && !!window.storage && typeof window.storage.get === 'function';
 }
+// Migrates a slot value from the old {shallow:[],deep:[]} shape (pre single-column
+// version) into a flat array, keeping whatever was in the shallow side.
+function migrateSlotValue(v){
+  if(Array.isArray(v)) return v;
+  if(v && Array.isArray(v.shallow)) return v.shallow;
+  return [];
+}
 function load(){
   if(!hasStorage()){
     renderAll();
@@ -708,10 +613,10 @@ function load(){
           state.library = data.library && data.library.length ? data.library : DEFAULT_LIBRARY.slice();
           var pairs = parseInt(data.blockPairs, 10);
           state.blockPairs = (pairs >= MIN_PAIRS && pairs <= MAX_PAIRS) ? pairs : state.blockPairs;
-          state.slots = data.slots || {};
-          state.fixedText = (data.fixedText && typeof data.fixedText === 'object') ? data.fixedText : {};
+          var rawSlots = data.slots || {};
+          state.slots = {};
+          Object.keys(rawSlots).forEach(function(k){ state.slots[k] = migrateSlotValue(rawSlots[k]); });
           state.blockMuscle = (data.blockMuscle && typeof data.blockMuscle === 'object') ? data.blockMuscle : {};
-          state.reminders = (typeof data.reminders === 'string') ? data.reminders : DEFAULT_REMINDERS;
         }catch(e){ console.error('Parse failed', e); }
       }
       renderAll();
@@ -729,22 +634,15 @@ function load(){
 function renderAll(){
   document.getElementById('themeInput').value = state.theme;
   renderLibrary();
-  renderColumn('shallow');
-  renderColumn('deep');
+  renderPlan();
   renderSummary();
-}
-
-function depthBadge(depth){
-  if(depth === 'shallow') return '<span class="depth-badge depth-shallow" title="Shallow water only">S</span>';
-  if(depth === 'deep') return '<span class="depth-badge depth-deep" title="Deep water only">D</span>';
-  return '<span class="depth-badge depth-both" title="Shallow or deep water">S/D</span>';
 }
 
 function renderLibrary(){
   var wrap = document.getElementById('libraryGroups');
   wrap.innerHTML = '';
   CATEGORIES.forEach(function(cat, catIdx){
-    var items = state.library.filter(function(x){ return x.category === cat.key; });
+    var items = state.library.filter(function(x){ return x.category === cat.key && x.depth !== 'deep'; });
     if(!items.length) return;
     var group = document.createElement('div');
     group.className = 'cat-group';
@@ -776,7 +674,7 @@ function renderLibrary(){
         var card = document.createElement('div');
         card.className = 'ex-card';
         card.style.borderLeft = '3px solid '+cat.color;
-        card.innerHTML = depthBadge(ex.depth) + '<span class="ex-name">'+escapeHtml(ex.name)+'</span>' + (ex.dosage ? '<span class="dosage">'+escapeHtml(ex.dosage)+'</span>' : '');
+        card.innerHTML = '<span class="ex-name">'+escapeHtml(ex.name)+'</span>' + (ex.dosage ? '<span class="dosage">'+escapeHtml(ex.dosage)+'</span>' : '');
         card.dataset.exId = ex.id;
         attachDrag(card, ex);
         subWrap.appendChild(card);
@@ -794,12 +692,11 @@ function sectionNoteHtml(sec){
   return sec.note ? '<span class="section-note">– '+escapeHtml(sec.note)+'</span>' : '';
 }
 
-function renderColumn(depth){
-  var container = document.getElementById(depth==='shallow' ? 'sectionsShallow' : 'sectionsDeep');
+function renderPlan(){
+  var container = document.getElementById('sectionsPlan');
   container.innerHTML = '';
   var sections = allSections();
-  var lastPhase = null;
-  sections.forEach(function(sec, idx){
+  sections.forEach(function(sec){
     var secEl = document.createElement('div');
     secEl.className = 'section';
     var head = document.createElement('div');
@@ -807,8 +704,8 @@ function renderColumn(depth){
     head.innerHTML = '<h3>'+escapeHtml(sec.title)+'</h3>' + sectionNoteHtml(sec);
     secEl.appendChild(head);
 
-    if(sec.type === 'fixed' || sec.type === 'mixed'){
-      var textVal = ensureFixedText(sec.id)[depth];
+    if(sec.type === 'fixed'){
+      var textVal = FIXED_TEXT_DEFAULTS[sec.id] || '';
       var fixedBlock = document.createElement('div');
       fixedBlock.className = 'fixed-text-block';
       var readOnly = document.createElement('div');
@@ -816,16 +713,14 @@ function renderColumn(depth){
       readOnly.textContent = textVal;
       fixedBlock.appendChild(readOnly);
       secEl.appendChild(fixedBlock);
-    }
-    if(sec.type === 'dropzone' || sec.type === 'mixed'){
+    } else if(sec.type === 'dropzone'){
       var slot = ensureSlot(sec.id);
       var dz = document.createElement('div');
       dz.className = 'dropzone';
       dz.dataset.sectionId = sec.id;
       dz.dataset.category = sec.category;
-      dz.dataset.depth = depth;
-      slot[depth].forEach(function(item){
-        dz.appendChild(renderSlotItem(item, sec.id, depth));
+      slot.forEach(function(item){
+        dz.appendChild(renderSlotItem(item, sec.id));
       });
       secEl.appendChild(dz);
     }
@@ -836,24 +731,7 @@ function renderColumn(depth){
       container.appendChild(conditioningStepperRow());
     }
   });
-
-  // reminders block
-  var rem = document.createElement('div');
-  rem.className = 'reminders';
-  rem.innerHTML = '<h3>WaterART Reminders</h3>';
-  var ta = document.createElement('textarea');
-  ta.value = state.reminders;
-  ta.addEventListener('input', function(){ state.reminders = ta.value; syncOtherReminders(depth, ta.value); persist(); renderSummary(); });
-  ta.dataset.remindersFor = depth;
-  rem.appendChild(ta);
-  container.appendChild(rem);
 }
-function syncOtherReminders(depth, val){
-  var other = depth==='shallow' ? 'deep' : 'shallow';
-  var el = document.querySelector('textarea[data-reminders-for="'+other+'"]');
-  if(el) el.value = val;
-}
-function preCount(){ return fixedPreSections().length; }
 
 function conditioningStepperRow(){
   var row = document.createElement('div');
@@ -869,7 +747,7 @@ function conditioningStepperRow(){
     if(state.blockPairs > MIN_PAIRS){
       state.blockPairs--;
       persist();
-      renderColumn('shallow'); renderColumn('deep'); renderSummary();
+      renderPlan(); renderSummary();
     }
   });
 
@@ -886,7 +764,7 @@ function conditioningStepperRow(){
     if(state.blockPairs < MAX_PAIRS){
       state.blockPairs++;
       persist();
-      renderColumn('shallow'); renderColumn('deep'); renderSummary();
+      renderPlan(); renderSummary();
     }
   });
 
@@ -896,7 +774,7 @@ function conditioningStepperRow(){
   return row;
 }
 
-function renderSlotItem(item, sectionId, depth){
+function renderSlotItem(item, sectionId){
   var el = document.createElement('div');
   el.className = 'slot-item';
   var nameWrap = document.createElement('div');
@@ -920,12 +798,11 @@ function renderSlotItem(item, sectionId, depth){
   rmBtn.type = 'button';
   rmBtn.innerHTML = '&times;';
   rmBtn.addEventListener('click', function(){
-    var slot = ensureSlot(sectionId);
-    var arr = slot[depth];
+    var arr = ensureSlot(sectionId);
     var i = arr.indexOf(item);
     if(i>-1) arr.splice(i,1);
     persist();
-    renderColumn(depth);
+    renderPlan();
     renderSummary();
   });
   el.appendChild(nameWrap);
@@ -948,9 +825,7 @@ function attachDrag(card, ex){
 }
 
 function zoneMatches(ex, dz){
-  if(dz.dataset.category !== ex.category) return false;
-  if(ex.depth === 'both') return true;
-  return ex.depth === dz.dataset.depth;
+  return dz.dataset.category === ex.category;
 }
 
 // Finds the best drop target near (px,py): exact hit first, then nearest
@@ -1070,11 +945,10 @@ function finishDrag(x, y){
   if(dz){
     if(zoneMatches(ex, dz)){
       var sectionId = dz.dataset.sectionId;
-      var depth = dz.dataset.depth;
       var slot = ensureSlot(sectionId);
-      slot[depth].push({ name: ex.name, dosage: ex.dosage || '' });
+      slot.push({ name: ex.name, dosage: ex.dosage || '' });
       persist();
-      renderColumn(depth);
+      renderPlan();
       renderSummary();
     } else {
       dz.classList.add('reject-flash');
@@ -1085,42 +959,28 @@ function finishDrag(x, y){
 }
 
 // ---------------- summary ----------------
-function phaseTitle(id){
-  var map = {orientation:'ORIENTATION', buoyancy:'WARM UP – BUOYANCY', 'cv-warmup':'WARM UP – CARDIOVASCULAR', warmdown:'WARM DOWN AND RELAXATION', postclass:'POST CLASS'};
-  return map[id] || null;
-}
 function renderSummary(){
   var lines = [];
   lines.push('AQUAFIT PROGRAM PLAN');
   if(state.theme) lines.push('Focus / theme: ' + state.theme);
   lines.push('='.repeat(50));
   var sections = allSections();
-  ['shallow','deep'].forEach(function(depth){
+  sections.forEach(function(sec){
     lines.push('');
-    lines.push((depth==='shallow' ? 'SHALLOW WATER' : 'DEEP WATER'));
-    lines.push('-'.repeat(30));
-    sections.forEach(function(sec){
-      lines.push('');
-      lines.push(sec.title.toUpperCase() + (sec.note ? '  (' + sec.note + ')' : ''));
-      if(sec.type === 'fixed' || sec.type === 'mixed'){
-        var text = ensureFixedText(sec.id)[depth] || '';
-        text.split('\n').forEach(function(l){ if(l.trim()) lines.push('  ' + l); });
+    lines.push(sec.title.toUpperCase() + (sec.note ? '  (' + sec.note + ')' : ''));
+    if(sec.type === 'fixed'){
+      var text = FIXED_TEXT_DEFAULTS[sec.id] || '';
+      text.split('\n').forEach(function(l){ if(l.trim()) lines.push('  ' + l); });
+    } else if(sec.type === 'dropzone'){
+      var slot = ensureSlot(sec.id);
+      if(!slot.length){
+        lines.push('  · (no exercises assigned)');
+      } else {
+        slot.forEach(function(it){
+          lines.push('  · ' + it.name + (it.dosage ? '  –  ' + it.dosage : ''));
+        });
       }
-      if(sec.type === 'dropzone' || sec.type === 'mixed'){
-        var slot = ensureSlot(sec.id);
-        var items = slot[depth];
-        if(!items.length){
-          lines.push('  · (no exercises assigned)');
-        } else {
-          items.forEach(function(it){
-            lines.push('  · ' + it.name + (it.dosage ? '  –  ' + it.dosage : ''));
-          });
-        }
-      }
-    });
-    lines.push('');
-    lines.push('WATERART REMINDERS');
-    state.reminders.split('\n').forEach(function(l){ if(l.trim()) lines.push('  · '+l); });
+    }
   });
   document.getElementById('summaryText').value = lines.join('\n');
 }
@@ -1152,10 +1012,9 @@ document.getElementById('customForm').addEventListener('submit', function(e){
   var name = document.getElementById('customName').value.trim();
   var category = document.getElementById('customCategory').value;
   var group = document.getElementById('customGroup').value.trim();
-  var depth = document.getElementById('customDepth').value;
   var dosage = document.getElementById('customDosage').value.trim();
   if(!name) return;
-  state.library.push({id:'c'+Date.now(), category:category, group: group || 'Custom', name:name, dosage:dosage, depth:depth});
+  state.library.push({id:'c'+Date.now(), category:category, group: group || 'Custom', name:name, dosage:dosage, depth:'both'});
   document.getElementById('customName').value='';
   document.getElementById('customGroup').value='';
   document.getElementById('customDosage').value='';
