@@ -748,7 +748,7 @@ function renderLibrary(){
     title.innerHTML = '<span class="cat-dot" style="background:'+cat.color+'"></span>' + cat.label + ' <span class="cat-count">('+items.length+')</span>';
     var cards = document.createElement('div');
     cards.className = 'cat-cards';
-    if(catIdx > 0) cards.classList.add('collapsed'); // keep only the first category open by default
+    cards.classList.add('collapsed'); // start every category minimized
     title.addEventListener('click', function(){ cards.classList.toggle('collapsed'); });
 
     // sub-group by exercise family / muscle group, preserving first-seen order
