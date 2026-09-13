@@ -327,6 +327,26 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
 }
 .slot-item .remove:hover{color:var(--buoy);}
 
+.slot-item .drag-handle{
+  flex:none;
+  align-self:stretch;
+  display:flex; align-items:center;
+  color:var(--ink-soft);
+  font-size:14px;
+  letter-spacing:-3px;
+  cursor:grab;
+  touch-action:none;
+  padding:0 2px 0 0;
+  user-select:none;
+  opacity:.55;
+}
+.slot-item .drag-handle:hover{opacity:1;}
+.slot-item.reorder-dragging{
+  opacity:.55;
+  box-shadow:0 4px 10px rgba(0,0,0,.15);
+  border-color:var(--buoy);
+}
+
 .add-block-row{
   display:flex; justify-content:center; align-items:center; margin:4px 0;
 }
@@ -1032,6 +1052,13 @@ function conditioningStepperRow(){
 function renderSlotItem(item, sectionId){
   var el = document.createElement('div');
   el.className = 'slot-item';
+  el._item = item; // keep a reference so we can read DOM order back into the array later
+
+  var handle = document.createElement('div');
+  handle.className = 'drag-handle';
+  handle.innerHTML = '&#8942;&#8942;';
+  handle.title = 'Drag to reorder';
+
   var nameWrap = document.createElement('div');
   nameWrap.style.flex = '1';
   var nameEl = document.createElement('div');
@@ -1060,9 +1087,59 @@ function renderSlotItem(item, sectionId){
     renderPlan();
     renderSummary();
   });
+  el.appendChild(handle);
   el.appendChild(nameWrap);
   el.appendChild(rmBtn);
+
+  attachReorderDrag(handle, el, sectionId);
   return el;
+}
+
+// ---------------- reorder exercises within a slot ----------------
+function attachReorderDrag(handle, itemEl, sectionId){
+  handle.addEventListener('pointerdown', function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    startReorderDrag(itemEl, sectionId, e.clientY);
+  });
+}
+
+function startReorderDrag(itemEl, sectionId, startY){
+  var dz = itemEl.parentElement;
+  if(!dz) return;
+  itemEl.classList.add('reorder-dragging');
+
+  function onMove(ev){
+    var y = ev.clientY;
+    var siblings = Array.prototype.slice.call(dz.querySelectorAll('.slot-item')).filter(function(el){ return el !== itemEl; });
+    var placed = false;
+    for(var i = 0; i < siblings.length; i++){
+      var rect = siblings[i].getBoundingClientRect();
+      var mid = rect.top + rect.height / 2;
+      if(y < mid){
+        dz.insertBefore(itemEl, siblings[i]);
+        placed = true;
+        break;
+      }
+    }
+    if(!placed) dz.appendChild(itemEl);
+  }
+
+  function onUp(){
+    window.removeEventListener('pointermove', onMove);
+    window.removeEventListener('pointerup', onUp);
+    window.removeEventListener('pointercancel', onUp);
+    itemEl.classList.remove('reorder-dragging');
+
+    var newOrder = Array.prototype.slice.call(dz.querySelectorAll('.slot-item')).map(function(el){ return el._item; });
+    state.slots[sectionId] = newOrder;
+    persist();
+    renderSummary();
+  }
+
+  window.addEventListener('pointermove', onMove);
+  window.addEventListener('pointerup', onUp);
+  window.addEventListener('pointercancel', onUp);
 }
 
 // ---------------- drag & drop (pointer events) ----------------
