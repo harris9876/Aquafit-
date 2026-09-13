@@ -359,6 +359,9 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
 }
 
 /* ---------- summary ---------- */
+.doc-actions-row{
+  display:flex; flex-wrap:wrap; gap:10px;
+}
 .summary-toggle{
   align-self:flex-start;
   background:var(--deep);
@@ -366,6 +369,8 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
   border:none; border-radius:8px;
   padding:9px 16px; font-size:13px; font-weight:600; cursor:pointer;
 }
+.export-btn{background:var(--buoy);}
+.export-btn:hover{background:var(--buoy-dark);}
 .summary-toggle:hover{background:var(--deep-2);}
 .summary-panel{
   background:#fff;
@@ -451,6 +456,29 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
   box-shadow:0 8px 20px rgba(0,0,0,.25);
   transform:translate(-50%,-130%);
 }
+/* ---------- printable one-page plan ---------- */
+#printArea{ display:none; }
+.print-title{ margin:0 0 2px; font-family:'Fraunces',serif; }
+.print-theme{ margin:0 0 10px; color:#333; }
+.print-meta{ font-size:.8em; color:#555; margin-bottom:12px; }
+.print-columns{ column-count:2; column-gap:26px; }
+.print-section{ break-inside:avoid; page-break-inside:avoid; margin-bottom:12px; }
+.print-section h3{ margin:0 0 4px; font-family:'Fraunces',serif; font-style:italic; border-bottom:1.5px solid #999; padding-bottom:2px; }
+.print-section .print-note{ font-weight:400; font-style:normal; font-size:.75em; color:#666; }
+.print-fixed-text{ white-space:pre-line; margin:0; }
+.print-ex-list{ margin:0; padding-left:1.1em; }
+.print-ex-list li{ margin-bottom:2px; }
+.print-dosage{ color:#555; }
+
+@media print{
+  body > *:not(#printArea){ display:none !important; }
+  #printArea{
+    display:block !important;
+    color:#111; background:#fff;
+  }
+  @page{ size:letter portrait; margin:0.4in; }
+}
+
 </style>
 </head>
 <body>
@@ -504,7 +532,10 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
 
 <div class="app" style="padding-top:0;">
   <div style="width:100%;display:flex;flex-direction:column;gap:10px;">
-    <button class="summary-toggle" id="summaryToggle">View plan as document</button>
+    <div class="doc-actions-row">
+      <button class="summary-toggle" id="summaryToggle">View plan as document</button>
+      <button class="summary-toggle export-btn" id="exportPrintBtn" type="button">Export plan as document</button>
+    </div>
     <div class="summary-panel" id="summaryPanel" style="display:none;">
       <h2>Plan Summary</h2>
       <textarea id="summaryText" readonly></textarea>
@@ -512,6 +543,8 @@ h1,h2,h3,.display{font-family:'Fraunces',serif;}
     </div>
   </div>
 </div>
+
+<div id="printArea"></div>
 
 <div class="picker-overlay" id="pickerOverlay" style="display:none;">
   <div class="picker-panel">
@@ -1210,6 +1243,70 @@ function renderSummary(){
   document.getElementById('summaryText').value = lines.join('\n');
 }
 
+// ---------------- printable one-page export ----------------
+function buildPrintDocument(){
+  var sections = allSections();
+
+  // ---- build the HTML content as a string first ----
+  var headerHtml = '<h1 class="print-title">Aquafit Program Plan</h1>';
+  if(state.theme){
+    headerHtml += '<div class="print-theme">Focus / theme: '+escapeHtml(state.theme)+'</div>';
+  }
+  headerHtml += '<div class="print-meta">'+escapeHtml(new Date().toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric' }))+'</div>';
+
+  var sectionsHtml = '';
+  sections.forEach(function(sec){
+    sectionsHtml += '<div class="print-section"><h3>'+escapeHtml(sec.title)+
+      (sec.note ? ' <span class="print-note">\u2013 '+escapeHtml(sec.note)+'</span>' : '')+'</h3>';
+    if(sec.type === 'fixed'){
+      sectionsHtml += '<div class="print-fixed-text">'+escapeHtml(FIXED_TEXT_DEFAULTS[sec.id] || '')+'</div>';
+    } else if(sec.type === 'dropzone'){
+      var slot = ensureSlot(sec.id);
+      if(!slot.length){
+        sectionsHtml += '<div class="print-fixed-text">(no exercises assigned)</div>';
+      } else {
+        sectionsHtml += '<ul class="print-ex-list">';
+        slot.forEach(function(it){
+          sectionsHtml += '<li>'+escapeHtml(it.name) + (it.dosage ? ' <span class="print-dosage">\u2013 '+escapeHtml(it.dosage)+'</span>' : '')+'</li>';
+        });
+        sectionsHtml += '</ul>';
+      }
+    }
+    sectionsHtml += '</div>';
+  });
+
+  var fullHtml = headerHtml + '<div class="print-columns">' + sectionsHtml + '</div>';
+
+  // ---- measure at decreasing font sizes until it fits one printed page ----
+  // Letter page, 0.4in margins on all sides -> usable area in CSS px (96px/in).
+  var PAGE_W_PX = (8.5 - 0.8) * 96;
+  var PAGE_H_PX = (11 - 0.8) * 96;
+
+  var probe = document.createElement('div');
+  probe.style.position = 'fixed';
+  probe.style.left = '-99999px';
+  probe.style.top = '0';
+  probe.style.width = PAGE_W_PX + 'px';
+  probe.style.visibility = 'hidden';
+  probe.innerHTML = fullHtml;
+  document.body.appendChild(probe);
+
+  var sizes = [15, 14, 13, 12, 11.5, 11, 10.5, 10, 9.5, 9, 8.5, 8, 7.5, 7];
+  var chosenSize = sizes[sizes.length - 1];
+  for(var i = 0; i < sizes.length; i++){
+    probe.style.fontSize = sizes[i] + 'pt';
+    if(probe.scrollHeight <= PAGE_H_PX){
+      chosenSize = sizes[i];
+      break;
+    }
+  }
+  document.body.removeChild(probe);
+
+  var container = document.getElementById('printArea');
+  container.innerHTML = fullHtml;
+  container.style.fontSize = chosenSize + 'pt';
+}
+
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, function(c){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
@@ -1228,6 +1325,10 @@ document.getElementById('summaryToggle').addEventListener('click', function(){
   panel.style.display = showing ? 'none' : 'block';
   this.textContent = showing ? 'View plan as document' : 'Hide document view';
   if(!showing) renderSummary();
+});
+document.getElementById('exportPrintBtn').addEventListener('click', function(){
+  buildPrintDocument();
+  setTimeout(function(){ window.print(); }, 50);
 });
 document.getElementById('randomFillBtn').addEventListener('click', function(){
   randomFillAll();
