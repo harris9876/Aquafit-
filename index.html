@@ -696,6 +696,29 @@ function shuffle(arr){
 function getLibraryItemByName(name){
   return state.library.find(function(ex){ return ex.name === name; });
 }
+// Keeps a Muscular Conditioning block's "Target: <muscle>" label in sync with
+// whatever exercises are actually sitting in it right now.
+function recalcBlockMuscleGroup(sectionId){
+  if(!sectionId || sectionId.indexOf('me-block-') !== 0) return;
+  var slot = ensureSlot(sectionId);
+  if(!slot.length){
+    delete state.blockMuscle[sectionId];
+    return;
+  }
+  var counts = {};
+  var order = [];
+  slot.forEach(function(it){
+    var found = getLibraryItemByName(it.name);
+    if(found && found.category === 'muscle' && found.group){
+      if(!counts[found.group]){ counts[found.group] = 0; order.push(found.group); }
+      counts[found.group]++;
+    }
+  });
+  if(!order.length) return; // all custom/unrecognized exercises - leave existing target alone
+  var best = order[0];
+  order.forEach(function(g){ if(counts[g] >= counts[best]) best = g; });
+  state.blockMuscle[sectionId] = best;
+}
 function fillSlotRandom(sectionId, category, count){
   var slot = ensureSlot(sectionId);
   var locked = slot.filter(function(it){ return it.locked; });
@@ -1047,6 +1070,7 @@ function manualAddRow(sectionId){
     if(!name) return;
     var slot = ensureSlot(sectionId);
     slot.push({ name: name, dosage: '', locked: false });
+    recalcBlockMuscleGroup(sectionId);
     persist();
     renderPlan();
     renderSummary();
@@ -1128,6 +1152,7 @@ function selectPickerExercise(ex){
   if(!pickerState.sectionId) return;
   var slot = ensureSlot(pickerState.sectionId);
   slot.push({ name: ex.name, dosage: ex.dosage || '', locked: false });
+  recalcBlockMuscleGroup(pickerState.sectionId);
   persist();
   renderPlan();
   renderSummary();
@@ -1220,6 +1245,7 @@ function renderSlotItem(item, sectionId){
     var arr = ensureSlot(sectionId);
     var i = arr.indexOf(item);
     if(i>-1) arr.splice(i,1);
+    recalcBlockMuscleGroup(sectionId);
     persist();
     renderPlan();
     renderSummary();
@@ -1419,6 +1445,7 @@ function finishDrag(x, y){
       var sectionId = dz.dataset.sectionId;
       var slot = ensureSlot(sectionId);
       slot.push({ name: ex.name, dosage: ex.dosage || '', locked: false });
+      recalcBlockMuscleGroup(sectionId);
       persist();
       renderPlan();
       renderSummary();
