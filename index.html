@@ -641,7 +641,7 @@ var EN = "\u2013"; // en dash
 // sourced from the WaterART "Make Your Own" lesson-plan template.
 var FIXED_TEXT_DEFAULTS = {
   'orientation': "1. Speaker, chair, and noodle\n2. Greet and ask about health concerns\n3. Make sure pool is warm",
-  'buoyancy': "1. Get warm and jog\n2. Equipment check\n3. Sculling\n4. Moves (Jog, Walk, Kick, Jump, Jax, Rock, Ski)\n5. Fall checks",
+  'buoyancy': "1. Get warm and jog\n2. Equipment check\n3. Sculling\n4. Fall checks\n5. Moves (Jog, Walk, Kick, Jump, Jax, Rock, Ski)",
   'cv-warmup': "1. Posture Check and spacing\n2. Jax\n3. Ski through the working positions (Extended, Neutral, Rebound, Modified Rebound, Modified Suspended, Suspended)",
   'warmdown': "1. Stretch Shoulders, Hamstrings, Quads, Hip Flexors, Forearms + Fingers\n2. Jog with Elephant Trunk\n3. Stretch Biceps, Chest, Triceps, Glutes, Neck, Calves",
   'postclass': "1. Thank you + don't leave anything behind\n2. Grab some protein and electrolytes\n3. Questions, comments, and concerns"
@@ -817,7 +817,7 @@ function performRandomFill(){
   fillSlotRandom('cv-warmup', 'cardio', 2);
 
   for(var i = 1; i <= state.blockPairs; i++){
-    fillSlotRandom('cv-block-'+i, 'cardio', 3);
+    fillSlotRandom('cv-block-'+i, 'cardio', 5);
 
     var meId = 'me-block-'+i;
     var meSlot = ensureSlot(meId);
